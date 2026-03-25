@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction History{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        
+        <!-- Header Section -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold mb-1">Prediction History</h3>
+                <p class="text-muted mb-0">Review your previous searches and results.</p>
+            </div>
+            {% if history %}
+            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2" style="font-size: 0.9rem;">
+                {{ history|length }} Records
+            </span>
+            {% endif %}
+        </div>
+
+        <div class="content-card">
+            {% if history %}
+                <div class="table-responsive">
+                    <table class="table table-modern">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 60px;">#</th>
+                                <th scope="col">Result</th>
+                                <th scope="col">Parameters Used</th>
+                                <th scope="col" style="width: 200px;">Other Options</th>
+                                <th scope="col" style="width: 130px;">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in history %}
+                            <tr>
+                                <td class="text-center align-middle">
+                                    <span class="fw-bold text-muted">{{ loop.index }}</span>
+                                </td>
+                                
+                                <!-- Main Prediction -->
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-box-sm bg-success bg-opacity-10 text-success me-3">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mortarboard" viewBox="0 0 16 16">
+                                                <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 0 .906l7.5 3.5a.5.5 0 0 0 .422 0l7.5-3.5a.5.5 0 0 0 0-.906l-7.5-3.5ZM8 8.97a.5.5 0 0 0 .211-.047L13.5 6.5l-5.289-2.423A.5.5 0 0 0 8 4.03v4.94Z"/>
+                                                <path d="M4.002 8.05a.5.5 0 0 0-.422.906l3.5 1.5a.5.5 0 0 0 .422 0l3.5-1.5a.5.5 0 0 0-.422-.906L8 9.354l-3.998-1.304Z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark">{{ item.prediction }}</div>
+                                            <small class="text-muted">Top Choice</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                                <!-- Input Parameters -->
+                                <td class="align-middle">
+                                    {% if item.input %}
+                                    <div class="d-flex flex-wrap gap-1">
+                                        <span class="badge bg-light text-dark border">Rank: {{ item.input.rank }}</span>
+                                        <span class="badge bg-light text-dark border">Cutoff: {{ item.input.cut_off }}</span>
+                                    </div>
+                                    {% else %}
+                                    <span class="text-muted small">N/A</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <!-- Top Predictions List -->
+                                <td class="align-middle">
+                                    {% if item.top_predictions %}
+                                    <ul class="list-unstyled mb-0 prediction-list">
+                                        {% for c, p in item.top_predictions %}
+                                        <li class="d-flex justify-content-between small mb-1">
+                                            <span class="text-truncate me-2" style="max-width: 120px;">{{ c }}</span>
+                                            <span class="text-muted flex-shrink-0">{{ "%.1f" % (p*100) }}%</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                    <span class="text-muted small">-</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <!-- Date -->
+                                <td class="align-middle text-muted small text-end">
+                                    {{ item.created_at }}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="var(--primary-green-light)" class="bi bi-journal-x" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
+                            <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
+                            <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
+                        </svg>
+                    </div>
+                    <h5 class="fw-medium text-dark">No History Found</h5>
+                    <p class="text-muted">You haven't made any predictions yet.</p>
+                    <a href="{{ url_for('predict') }}" class="btn btn-primary mt-2">
+                        Make your first Prediction
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Small Icon Box for Table */
+    .icon-box-sm {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Prediction List Styling inside Table */
+    .prediction-list li {
+        line-height: 1.3;
+    }
+
+    /* Modern Table Styling */
+    .table-modern {
+        border-collapse: separate;
+        border-spacing: 0 10px;
+        margin: -10px; /* Offset the spacing for outer alignment */
+    }
+    
+    .table-modern thead th {
+        border: none;
+        color: #888;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 10px 16px;
+    }
+    
+    .table-modern tbody tr {
+        background-color: #fff;
+        transition: all 0.2s;
+    }
+    
+    .table-modern tbody tr:hover {
+        background-color: #fcfcfc;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .table-modern tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border: none;
+    }
+
+    /* Row Border Radius Effect */
+    .table-modern tbody tr td:first-child {
+        border-top-left-radius: 12px;
+        border-bottom-left-radius: 12px;
+    }
+    .table-modern tbody tr td:last-child {
+        border-top-right-radius: 12px;
+        border-bottom-right-radius: 12px;
+    }
+</style>
+{% endblock %}

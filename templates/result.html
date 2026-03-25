@@ -1,0 +1,487 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction Result{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        
+        <!-- Main Result Hero -->
+        <div class="content-card text-center mb-4" style="border-top: 5px solid var(--primary-green);">
+            <div class="py-2">
+                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-patch-check-fill me-1" viewBox="0 0 16 16">
+                        <path d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708z"/>
+                    </svg>
+                    Top Prediction
+                </span>
+                <h2 class="fw-bold mb-2" style="color: var(--text-dark);">{{ best_college }}</h2>
+                <p class="text-muted mb-0">This is the most likely college based on your inputs.</p>
+            </div>
+        </div>
+
+        <!-- College, Fees & Placement Grid -->
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-success bg-opacity-10 text-success me-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-building" viewBox="0 0 16 16">
+                                    <path d="M6.5 15V1h3v14h-3ZM1 15V4h4v11H1Zm10 0V7h4v8h-4Z"/>
+                                </svg>
+                            </div>
+                            <h5 class="fw-bold mb-0" style="color: var(--primary-green);">College Details</h5>
+                        </div>
+                        {% if college_details %}
+                        <div class="row g-2 ps-1">
+
+                            <div class="col-md-6">
+                                <div class="small text-muted">Location</div>
+                                <div class="fw-medium">{{ college_details.location or 'Not available' }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted">College Type</div>
+                                <div class="fw-medium">{{ college_details.college_type or 'Not available' }}</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted">Approval / Affiliation</div>
+                                <div class="fw-medium">{{ college_details.approval_or_affiliation or 'Not available' }}</div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0 small">College details could not be fetched from external resources.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-success bg-opacity-10 text-success me-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cash-stack" viewBox="0 0 16 16">
+                                    <path d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1H1zm7 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/>
+                                    <path d="M0 5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V5zm3 0a2 2 0 0 1-2 2v4a2 2 0 0 1 2 2h10a2 2 0 0 1 2-2V7a2 2 0 0 1-2-2H3z"/>
+                                </svg>
+                            </div>
+                            <h5 class="fw-bold mb-0" style="color: var(--primary-green);">Fees Structure</h5>
+                        </div>
+                        {% if fees_details %}
+                        <div class="ps-1">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Tuition (Annual):</span>
+                                <span class="fw-bold">
+                                    {% set annual_tuition = fees_details.tuition_fee_annual_inr or fees_details.overall_program_fee_inr or 50000 %}
+                                    ₹{{ annual_tuition|int }}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Overall Program Fee:</span>
+                                <span>
+                                    {% set annual_tuition = fees_details.tuition_fee_annual_inr or fees_details.overall_program_fee_inr or 50000 %}
+                                    ₹{{ (annual_tuition|int * 4) }}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Hostel (Annual):</span>
+                                <span>
+                                    {% if fees_details.hostel_fee_annual_inr %}
+                                    ₹{{ fees_details.hostel_fee_annual_inr|int }}
+                                    {% else %}
+                                    Not available
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        {% elif fees_info %}
+                        <div class="ps-1">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Estimated Average:</span>
+                                <span class="fw-bold">₹{{ fees_info.mean|int }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Estimated Range:</span>
+                                <span>
+                                    {% if fees_info.min %}₹{{ fees_info.min|int }}{% else %}N/A{% endif %}
+                                    -
+                                    {% if fees_info.max %}₹{{ fees_info.max|int }}{% else %}N/A{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0 small">Fees and hostel fee data not available for this college.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="icon-box bg-success bg-opacity-10 text-success me-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-briefcase-fill" viewBox="0 0 16 16">
+                                    <path d="M0 1a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v1h1a2 2 0 0 1 2 2H4a2 2 0 0 1 2-2h1V1H0Zm10 5H4v8h6V6Zm1 0v8h1.5A1.5 1.5 0 0 0 14 12.5V6h-3Zm-8 8V6H3v6.5A1.5 1.5 0 0 0 4.5 14H6v-1H3Z"/>
+                                </svg>
+                            </div>
+                            <h5 class="fw-bold mb-0" style="color: var(--primary-green);">Placements</h5>
+                        </div>
+                        {% if placement_details %}
+                        <p class="mb-2 fw-medium">{{ placement_details.summary or placements_info or 'Placement details not available.' }}</p>
+                        <div class="ps-1">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted small">Placement Rate:</span>
+                                <span class="small fw-medium">
+                                    {% if placement_details.placement_rate_percent %}{{ placement_details.placement_rate_percent }}%{% else %}Not available{% endif %}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted small">Average Package:</span>
+                                <span class="small fw-medium">
+                                    {% if placement_details.average_package_lpa %}₹{{ placement_details.average_package_lpa }} LPA{% else %}Not available{% endif %}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="text-muted small">Highest Package:</span>
+                                <span class="small fw-medium">
+                                    {% if placement_details.highest_package_lpa %}₹{{ placement_details.highest_package_lpa }} LPA{% else %}Not available{% endif %}
+                                </span>
+                            </div>
+                            {% if placement_details.top_recruiters %}
+                            <small class="text-muted d-block mt-2">Top Recruiters: {{ placement_details.top_recruiters|join(', ') }}</small>
+                            {% endif %}
+                        </div>
+                        {% elif placements_info %}
+                        <p class="mb-1 fw-medium">{{ placements_info }}</p>
+                        {% if placements_source %}
+                        <small class="text-muted d-block mt-1">Source: {{ placements_source }}</small>
+                        {% endif %}
+                        {% else %}
+                        <p class="text-muted mb-0 small">
+                            {% if not gemini_available %}
+                            Placement data not available (External lookup disabled).
+                            {% else %}
+                            Placement data not available in dataset.
+                            {% endif %}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Other Predictions Table -->
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="fw-bold mb-0">Alternative Options</h5>
+                <span class="badge bg-light text-dark">{{ top_predictions_detailed|length if top_predictions_detailed else top_predictions|length }} Results</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-modern">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 50px;">#</th>
+                            <th scope="col">College</th>
+                            <th scope="col" style="width: 150px;">Probability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if top_predictions_detailed %}
+                            {% for item in top_predictions_detailed %}
+                            <tr>
+                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-link p-0 fw-medium text-start college-detail-link" data-college="{{ item.college|e }}">{{ item.college }}</button>
+                                    {% if item.placements %}
+                                    <small class="text-muted d-block mt-1">
+                                        {{ item.placements }} 
+                                        {% if item.placements_source %}<span class="badge bg-light border ms-1">{{ item.placements_source }}</span>{% endif %}
+                                    </small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px; background: #eee;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ (item.prob*100) }}%;" aria-valuenow="{{ (item.prob*100) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="fw-bold small">{{ "%.1f" % (item.prob*100) }}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            {% for college, prob in top_predictions %}
+                            <tr>
+                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
+                                <td><button type="button" class="btn btn-link p-0 fw-medium text-start college-detail-link" data-college="{{ college|e }}">{{ college }}</button></td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px; background: #eee;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ (prob*100) }}%;" aria-valuenow="{{ (prob*100) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="fw-bold small">{{ "%.1f" % (prob*100) }}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="collegeDetailCard" class="card border-0 shadow-sm mt-4 d-none">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                        <h6 class="fw-bold mb-0">Full College Details</h6>
+                        <span id="detailSourceBadge" class="badge bg-light text-dark border d-none"></span>
+                    </div>
+
+                    <div id="collegeDetailLoading" class="text-muted">Loading details...</div>
+                    <div id="collegeDetailError" class="alert alert-danger d-none" role="alert"></div>
+                    <div id="collegeDetailContent" class="d-none">
+                        <h6 id="detailCollegeName" class="fw-bold mb-3"></h6>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <div class="small text-muted">Location</div>
+                                <div id="detailLocation" class="fw-medium"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted">College Type</div>
+                                <div id="detailType" class="fw-medium"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted">Affiliation</div>
+                                <div id="detailAffiliation" class="fw-medium"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted">Placement Rate</div>
+                                <div id="detailPlacementRate" class="fw-medium"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted">Average Package</div>
+                                <div id="detailAvgPackage" class="fw-medium"></div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="small text-muted">Highest Package</div>
+                                <div id="detailHighestPackage" class="fw-medium"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="small text-muted">Tuition (Annual)</div>
+                                <div id="detailTuition" class="fw-medium"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="small text-muted">Overall Fees</div>
+                                <div id="detailOverallFees" class="fw-medium"></div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="small text-muted">Hostel (Annual)</div>
+                                <div id="detailHostelFees" class="fw-medium"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="small text-muted">Summary</div>
+                            <div id="detailSummary"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Footer -->
+        <div class="text-center mt-5">
+            <a href="{{ url_for('predict') }}" class="btn btn-outline-secondary px-4 me-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-1" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                </svg>
+                Predict Again
+            </a>
+            {% if session.username %}
+            <a href="{{ url_for('history') }}" class="btn btn-primary px-4">
+                View History
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Icon Box */
+    .icon-box {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Modern Table Styling */
+    .table-modern {
+        border-collapse: separate;
+        border-spacing: 0 8px; /* Vertical spacing between rows */
+    }
+    
+    .table-modern thead th {
+        border: none;
+        color: #888;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 16px;
+    }
+    
+    .table-modern tbody tr {
+        background-color: #fff;
+        transition: all 0.2s;
+    }
+    
+    .table-modern tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+    }
+
+    .table-modern tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border: none;
+    }
+
+    /* Row Border Radius Effect */
+    .table-modern tbody tr td:first-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        box-shadow: -1px 2px 4px rgba(0,0,0,0.02);
+    }
+    .table-modern tbody tr td:last-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        box-shadow: 1px 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .college-detail-link {
+        text-decoration: none;
+        color: var(--text-dark);
+    }
+
+    .college-detail-link:hover {
+        color: var(--primary-green);
+        text-decoration: underline;
+    }
+</style>
+
+<script>
+    (function () {
+        const detailCard = document.getElementById('collegeDetailCard');
+        if (!detailCard) return;
+
+        const detailSourceBadge = document.getElementById('detailSourceBadge');
+        const loadingEl = document.getElementById('collegeDetailLoading');
+        const errorEl = document.getElementById('collegeDetailError');
+        const contentEl = document.getElementById('collegeDetailContent');
+
+        const detailCollegeName = document.getElementById('detailCollegeName');
+
+        const detailLocation = document.getElementById('detailLocation');
+        const detailType = document.getElementById('detailType');
+        const detailAffiliation = document.getElementById('detailAffiliation');
+        const detailPlacementRate = document.getElementById('detailPlacementRate');
+        const detailAvgPackage = document.getElementById('detailAvgPackage');
+        const detailHighestPackage = document.getElementById('detailHighestPackage');
+        const detailTuition = document.getElementById('detailTuition');
+        const detailOverallFees = document.getElementById('detailOverallFees');
+        const detailHostelFees = document.getElementById('detailHostelFees');
+        const detailSummary = document.getElementById('detailSummary');
+
+
+        function safeText(v) {
+            return (v === null || v === undefined || v === '') ? 'Not available' : String(v);
+        }
+
+        function inr(v) {
+            if (v === null || v === undefined || v === '') return 'Not available';
+            const num = Number(v);
+            if (Number.isNaN(num)) return safeText(v);
+            return '₹' + Math.round(num).toLocaleString('en-IN');
+        }
+
+        async function openCollegeDetails(collegeName) {
+            detailCard.classList.remove('d-none');
+            loadingEl.classList.remove('d-none');
+            errorEl.classList.add('d-none');
+            contentEl.classList.add('d-none');
+            detailSourceBadge.classList.add('d-none');
+            detailSourceBadge.textContent = '';
+
+            try {
+                const res = await fetch('{{ url_for("api_college_details") }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ college_name: collegeName })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.ok) {
+                    throw new Error(data.error || 'Unable to fetch details.');
+                }
+
+                const details = data.details || {};
+                const college = details.college_details || {};
+                const placement = details.placement_details || {};
+                const fees = details.fees_details || {};
+                const sources = details.detail_sources || [];
+                const sourceLabel = details.details_source_label || '';
+
+                detailCollegeName.textContent = safeText(details.college || collegeName);
+
+                if (sourceLabel) {
+                    detailSourceBadge.classList.remove('d-none');
+                    detailSourceBadge.textContent = sourceLabel;
+                }
+
+
+
+                detailLocation.textContent = safeText(college.location);
+                detailType.textContent = safeText(college.college_type);
+                detailAffiliation.textContent = safeText(college.approval_or_affiliation);
+                detailPlacementRate.textContent = placement.placement_rate_percent ? (placement.placement_rate_percent + '%') : 'Not available';
+                detailAvgPackage.textContent = placement.average_package_lpa ? ('₹' + placement.average_package_lpa + ' LPA') : 'Not available';
+                detailHighestPackage.textContent = placement.highest_package_lpa ? ('₹' + placement.highest_package_lpa + ' LPA') : 'Not available';
+                let tuitionVal = fees.tuition_fee_annual_inr || fees.overall_program_fee_inr || 50000;
+                
+                detailTuition.textContent = inr(tuitionVal);
+                detailOverallFees.textContent = inr(tuitionVal * 4);
+                detailHostelFees.textContent = inr(fees.hostel_fee_annual_inr);
+                detailSummary.textContent = safeText(placement.summary || details.placements_info);
+
+
+
+                loadingEl.classList.add('d-none');
+                contentEl.classList.remove('d-none');
+                detailCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (err) {
+                loadingEl.classList.add('d-none');
+                errorEl.classList.remove('d-none');
+                errorEl.textContent = err.message || 'Unable to load details.';
+                detailCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        document.querySelectorAll('.college-detail-link').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const collegeName = btn.getAttribute('data-college');
+                if (!collegeName) return;
+                openCollegeDetails(collegeName);
+            });
+        });
+    })();
+</script>
+{% endblock %}

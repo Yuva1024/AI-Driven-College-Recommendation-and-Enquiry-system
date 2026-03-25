@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Home - TNEA Predictor{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-10">
+    <div class="card p-5 mb-4 text-center">
+      <h1 class="display-6">Find the best engineering colleges for you</h1>
+      <p class="lead text-muted">Enter your TNEA rank and preferences to get ML-driven college predictions, fees estimates and placement summaries.</p>
+      <div class="d-flex justify-content-center gap-2 mt-4">
+        {% if not session.username %}
+        <a class="btn btn-outline-primary btn-lg" href="{{ url_for('register') }}">Register</a>
+        <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('login') }}">Login</a>
+        {% else %}
+        <a class="btn btn-primary btn-lg" href="{{ url_for('predict') }}">Predict Colleges</a>
+        <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('dashboard') }}">Go to Dashboard</a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card p-4 mb-4">
+          <h5>Why use this tool?</h5>
+          <ul>
+            <li>ML-based predictions tailored to your rank and preferences</li>
+            <li>Estimated fees and placement summaries (sourced from dataset or Gemini)</li>
+            <li>Save predictions to your account for later review</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card p-4 mb-4">
+          <h5>Quick Start</h5>
+          <ol>
+            <li>Register or login</li>
+            <li>Open "Predict Colleges" and fill your details</li>
+            <li>View results and save to your history</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

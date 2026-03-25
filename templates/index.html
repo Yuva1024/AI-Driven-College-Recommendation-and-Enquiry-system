@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+
+{% block title %}TNEA College Predictor{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-5">
+            <div class="mb-3 mx-auto" style="width: 60px; height: 60px; background: rgba(0, 105, 92, 0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="var(--primary-green)" class="bi bi-search-heart" viewBox="0 0 16 16">
+                    <path d="M6.5 4.482c.663 0 1.2.497 1.2 1.11 0 .618-.537 1.11-1.2 1.11s-1.2-.492-1.2-1.11c0-.613.537-1.11 1.2-1.11zM3 5.59c0-.613.537-1.11 1.2-1.11s1.2.497 1.2 1.11c0 .618-.537 1.11-1.2 1.11S3 6.207 3 5.59zm6.8 0c0-.613.537-1.11 1.2-1.11s1.2.497 1.2 1.11c0 .618-.537 1.11-1.2 1.11s-1.2-.492-1.2-1.11z"/>
+                    <path d="M12.5 8.5a.5.5 0 0 0 0 1h.5v1.5a.5.5 0 0 0 1 0V9.5h.5a.5.5 0 0 0 0-1h-.5V7a.5.5 0 0 0-1 0v1.5h-.5zM8 9a1 1 0 0 1 1-1h.5a.5.5 0 0 1 0 1H9a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 1-1 0V10a.5.5 0 0 0-.5-.5h-.5a.5.5 0 0 1 0-1H7a1 1 0 0 1 1 1z"/>
+                    <path d="M8 1a7 7 0 1 0 3.315 13.186l.37.37a.5.5 0 0 0 .496.132l3.26-1.08a.5.5 0 0 0 .286-.573l-.882-3.52a.5.5 0 0 0-.39-.367 7.03 7.03 0 0 0-.67-.174A7 7 0 0 0 8 1zm0 1a6 6 0 0 1 4.89 9.478.5.5 0 0 0-.09.17l.745 2.975-2.37.784a.5.5 0 0 0-.23.152l-.424.425A6 6 0 1 1 8 2z"/>
+                </svg>
+            </div>
+            <h2 class="fw-bold" style="color: var(--text-dark);">TNEA College Predictor</h2>
+            <p class="text-muted mt-2">Enter your details to get ML-driven college predictions</p>
+        </div>
+
+        {% if error %}
+        <div class="alert alert-danger d-flex align-items-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+            <div>{{ error }}</div>
+        </div>
+        {% endif %}
+
+        <!-- Form Card -->
+        <div class="content-card mb-5">
+            <form method="POST">
+                <div class="row g-4">
+                    
+                    <!-- Rank & Cutoff -->
+                    <div class="col-md-6">
+                        <label class="form-label">TNEA Rank</label>
+                        <input type="number" name="rank" class="form-control" min="1" max="30000" value="{{ input_data.rank|default(5000) }}" required placeholder="e.g. 5000">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Cut-off Marks</label>
+                        <input type="number" step="0.5" name="cut_off" class="form-control" min="50" max="200" value="{{ input_data.cut_off|default(180.0) }}" required placeholder="e.g. 180.0">
+                    </div>
+
+                    <!-- Prev Cutoff & Category -->
+                    <div class="col-md-6">
+                        <label class="form-label">Previous Year Cutoff (Approx)</label>
+                        <input type="number" step="0.5" name="previous_year_cutoff" class="form-control" min="50" max="200" value="{{ input_data.previous_year_cutoff|default(175.0) }}" placeholder="Optional">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Community / Category</label>
+                        <select name="category" class="form-select" required>
+                            {% for cat in ['OC', 'BC', 'BCM', 'MBC', 'DNC', 'SC', 'SCA', 'ST'] %}
+                            <option value="{{ cat }}" {% if input_data.category == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Branch & District -->
+                    <div class="col-md-6">
+                        <label class="form-label">Preferred Branch</label>
+                        <select name="branch" class="form-select" required>
+                            {% for b in ['CSE','IT','ECE','EEE','Mechanical','Civil','Chemical','Aerospace','Biotech','EIE'] %}
+                            <option value="{{ b }}" {% if input_data.branch == b %}selected{% endif %}>{{ b }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Preferred District</label>
+                        <select name="district" class="form-select" required>
+                            {% for d in ['Chennai','Coimbatore','Vellore','Tiruchirappalli','Madurai','Salem','Tirunelveli','others'] %}
+                            <option value="{{ d }}" {% if input_data.district == d %}selected{% endif %}>{{ d }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Fees & Sports Quota -->
+                    <div class="col-md-6">
+                        <label class="form-label">Max Acceptable Fees (₹)</label>
+                        <input type="number" name="college_fees" class="form-control" min="50000" max="300000" value="{{ input_data.college_fees|default(150000) }}" step="10000">
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label d-block">Sports Quota?</label>
+                        <div class="btn-group w-100 mt-1" role="group">
+                            <input type="radio" class="btn-check" name="sports_quota" id="sportsNo" value="No" autocomplete="off" {% if not input_data or input_data.sports_quota != 'Yes' %}checked{% endif %}>
+                            <label class="btn btn-outline-secondary" for="sportsNo">No</label>
+
+                            <input type="radio" class="btn-check" name="sports_quota" id="sportsYes" value="Yes" autocomplete="off" {% if input_data and input_data.sports_quota == 'Yes' %}checked{% endif %}>
+                            <label class="btn btn-outline-secondary" for="sportsYes">Yes</label>
+                        </div>
+                    </div>
+
+                    <!-- Number of Predictions -->
+                    <div class="col-md-6">
+                        <label class="form-label">Number of Predictions</label>
+                        <select name="top_n" class="form-select">
+                            <option value="3" {% if not top_predictions or request.form.top_n|default('3') == '3' %}selected{% endif %}>Top 3</option>
+                            <option value="5" {% if request.form.top_n == '5' %}selected{% endif %}>Top 5</option>
+                            <option value="7" {% if request.form.top_n == '7' %}selected{% endif %}>Top 7</option>
+                        </select>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="col-12 text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-cpu me-2" viewBox="0 0 16 16">
+                                <path d="M5 0a.5.5 0 0 1 .5.5V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2A2.5 2.5 0 0 1 14 4.5h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14a2.5 2.5 0 0 1-2.5 2.5v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14A2.5 2.5 0 0 1 2 11.5H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2A2.5 2.5 0 0 1 4.5 2V.5A.5.5 0 0 1 5 0zm-.5 3A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 11.5 3h-7zM5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3zM6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
+                            </svg>
+                            Predict Colleges
+                        </button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Section -->
+        {% if prediction %}
+        <div class="content-card" style="border-top: 4px solid var(--primary-green);">
+            <div class="text-center mb-4">
+                <span class="badge bg-success bg-opacity-10 text-success mb-2">Prediction Result</span>
+                <h3 class="fw-bold mb-0">{{ prediction }}</h3>
+                <small class="text-muted">Most likely college based on your inputs</small>
+            </div>
+
+            {% if fees_info or placements_info %}
+            <div class="row mb-4">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="p-3 h-100" style="background: #f8f9fa; border-radius: 10px;">
+                        <h6 class="text-uppercase text-muted small mb-2">Fees Structure</h6>
+                        {% if fees_info %}
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-medium">Average:</span>
+                            <span>₹{{ fees_info.mean|int }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-medium">Range:</span>
+                            <span>₹{{ fees_info.min|int }} - ₹{{ fees_info.max|int }}</span>
+                        </div>
+                        {% else %}
+                        <p class="text-muted mb-0 small">Data not available for this college.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 h-100" style="background: #f8f9fa; border-radius: 10px;">
+                        <h6 class="text-uppercase text-muted small mb-2">Placements</h6>
+                        {% if placements_info %}
+                        <p class="mb-0">{{ placements_info }}</p>
+                        {% if placements_source %}
+                        <small class="text-muted d-block mt-1">Source: {{ placements_source }}</small>
+                        {% endif %}
+                        {% else %}
+                        <p class="text-muted mb-0 small">
+                            {% if not gemini_available %}
+                            External lookup disabled (API key missing).
+                            {% else %}
+                            Data not available.
+                            {% endif %}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Predictions Table -->
+            <h5 class="fw-bold mb-3">Alternative Options</h5>
+            <div class="table-responsive">
+                <table class="table table-modern">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 50px;">#</th>
+                            <th scope="col">College</th>
+                            <th scope="col" style="width: 120px;">Probability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if top_predictions_detailed %}
+                            {% for item in top_predictions_detailed %}
+                            <tr>
+                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
+                                <td>
+                                    <div class="fw-medium">{{ item.college }}</div>
+                                    {% if item.placements %}
+                                    <small class="text-muted d-block" style="font-size: 0.8rem;">
+                                        {{ item.placements }} 
+                                        {% if item.placements_source %}({{ item.placements_source }}){% endif %}
+                                    </small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px; background: #eee;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ (item.prob*100) }}%;" aria-valuenow="{{ (item.prob*100) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="fw-bold small">{{ "%.1f" % (item.prob*100) }}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            {% for college, prob in top_predictions %}
+                            <tr>
+                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
+                                <td class="fw-medium">{{ college }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="progress flex-grow-1 me-2" style="height: 6px; background: #eee;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ (prob*100) }}%;" aria-valuenow="{{ (prob*100) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                        <span class="fw-bold small">{{ "%.1f" % (prob*100) }}%</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <hr class="my-5">
+
+        <p class="text-center text-muted small">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-info-circle me-1" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+            This is an ML-based approximation — always verify with official TNEA counselling data.
+        </p>
+
+    </div>
+</div>
+
+<style>
+    /* Custom Styles for Predict Page */
+    .form-label {
+        font-weight: 600;
+        color: #444;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Modern Table Styling */
+    .table-modern {
+        border-collapse: separate;
+        border-spacing: 0 8px; /* Vertical spacing between rows */
+    }
+    
+    .table-modern thead th {
+        border: none;
+        color: #888;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 12px 16px;
+    }
+    
+    .table-modern tbody tr {
+        background-color: #fff;
+        transition: all 0.2s;
+    }
+    
+    .table-modern tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: translateX(2px);
+    }
+
+    .table-modern tbody td {
+        padding: 16px;
+        vertical-align: middle;
+        border: none;
+    }
+
+    /* Row Border Radius Effect */
+    .table-modern tbody tr td:first-child {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+        box-shadow: -1px 2px 4px rgba(0,0,0,0.02);
+    }
+    .table-modern tbody tr td:last-child {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        box-shadow: 1px 2px 4px rgba(0,0,0,0.02);
+    }
+</style>
+
+{% endblock %}

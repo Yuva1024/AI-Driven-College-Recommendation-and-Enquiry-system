@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TNEA College Predictor{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* -----------------------------------
+           1. CSS Variables (Theme Colors)
+           ----------------------------------- */
+        :root {
+            --primary-green: #00695c;
+            --primary-green-light: #4db6ac;
+            --primary-gradient: linear-gradient(135deg, #00695c 0%, #004d40 100%);
+            --accent-green: #2e7d32;
+            --bg-body: #f4f9f7;
+            --bg-card: #ffffff;
+            --text-dark: #1a1a1a;
+            --text-muted: #5a5a5a;
+            --shadow-soft: 0 8px 24px rgba(0, 105, 92, 0.08);
+            --shadow-hover: 0 12px 32px rgba(0, 105, 92, 0.15);
+            --radius-lg: 16px;
+            --radius-md: 10px;
+        }
+
+        /* -----------------------------------
+           2. Global Styles
+           ----------------------------------- */
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-green-light);
+            border-radius: 4px;
+        }
+
+        /* -----------------------------------
+           3. Layout & Container
+           ----------------------------------- */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* -----------------------------------
+           4. Navbar Styling
+           ----------------------------------- */
+        .navbar-custom {
+            background-color: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 15px 25px;
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 40px;
+            border: 1px solid rgba(0, 105, 92, 0.05);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-brand:hover {
+            color: var(--accent-green);
+        }
+
+        .user-greeting {
+            color: var(--text-muted);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .user-greeting strong {
+            color: var(--primary-green);
+            font-weight: 600;
+        }
+
+        /* -----------------------------------
+           5. Buttons (Premium Look)
+           ----------------------------------- */
+        .btn {
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    border-radius: var(--radius-md);
+    padding: 8px 18px;
+    font-size: 0.95rem;
+}
+
+/* Primary Gradient Button */
+.btn-primary {
+    background-image: var(--primary-gradient);
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 105, 92, 0.25);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px); /* Subtle lift effect */
+    box-shadow: 0 6px 16px rgba(0, 105, 92, 0.35);
+    background-image: linear-gradient(135deg, #004d40 0%, #00695c 100%);
+}
+
+/* Outline Button */
+.btn-outline-secondary {
+    color: var(--primary-green);
+    border-color: rgba(0, 105, 92, 0.2);
+    background-color: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background-color: rgba(0, 105, 92, 0.05);
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+    transform: translateY(-1px);
+}
+
+/* Danger/Logout Button */
+.btn-outline-danger {
+    color: #d32f2f;
+    border-color: rgba(211, 47, 47, 0.2);
+}
+
+.btn-outline-danger:hover {
+    background-color: rgba(211, 47, 47, 0.05);
+    border-color: #d32f2f;
+    color: #d32f2f;
+}
+
+/* -----------------------------------
+   6. Content Cards
+   ----------------------------------- */
+.content-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 30px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    margin-bottom: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden; /* Ensures header radius clips */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-hover);
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-weight: 600;
+    color: var(--primary-green);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* -----------------------------------
+   7. Forms (Input Styling)
+   ----------------------------------- */
+.form-control {
+    border-radius: var(--radius-md);
+    border: 1px solid #e0e0e0;
+    padding: 12px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-green-light);
+    box-shadow: 0 0 0 3px rgba(77, 182, 172, 0.15);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+}
+
+/* -----------------------------------
+   8. Responsive Adjustments
+   ----------------------------------- */
+@media (max-width: 768px) {
+    .navbar-custom {
+        padding: 12px 15px;
+    }
+    
+    .navbar-collapse {
+        margin-top: 15px;
+    }
+
+    .user-greeting {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+    
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid px-0">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <!-- SVG Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
+                    <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 0 .906l7.5 3.5a.5.5 0 0 0 .422 0l7.5-3.5a.5.5 0 0 0 0-.906l-7.5-3.5Z"/>
+                    <path d="M4.002 8.05a.5.5 0 0 0-.422.906l3.5 1.5a.5.5 0 0 0 .422 0l3.5-1.5a.5.5 0 0 0-.422-.906L8 9.354l-3.998-1.304Z"/>
+                    <path d="M8 11.354l-3.998-1.304a.5.5 0 0 0-.422.906l3.5 1.5a.5.5 0 0 0 .422 0l3.5-1.5a.5.5 0 0 0-.422-.906L8 11.354Z"/>
+                </svg>
+                TNEA Predictor
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    {% if session.username %}
+                        <span class="user-greeting me-2">
+                            Welcome back, <strong>{{ session.username }}</strong>
+                        </span>
+                        <a class="btn btn-outline-secondary" href="{{ url_for('chatbot_page') }}">AI Chatbot</a>
+                        <a class="btn btn-outline-secondary" href="{{ url_for('dashboard') }}">Dashboard</a>
+                        <a class="btn btn-outline-secondary" href="{{ url_for('history') }}">History</a>
+                        <a class="btn btn-outline-danger" href="{{ url_for('logout') }}">Logout</a>
+                    {% else %}
+                        <a class="btn btn-outline-secondary" href="{{ url_for('login') }}">Login</a>
+                        <a class="btn btn-primary" href="{{ url_for('register') }}">Get Started</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Block -->
+    {% block content %}{% endblock %}
+
+</div>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

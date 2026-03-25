@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        
+        <!-- Welcome Header Card -->
+        <div class="content-card mb-4">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                <div class="d-flex align-items-center mb-3 mb-md-0">
+                    <!-- User Avatar -->
+                    <div class="avatar-circle me-3">
+                        <span class="avatar-initials">{{ session.username[0]|upper }}</span>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-1" style="color: var(--text-dark);">
+                            Welcome back, <span style="color: var(--primary-green);">{{ session.username }}</span>!
+                        </h3>
+                        <p class="text-muted mb-0">Ready to find your dream college?</p>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                    <a class="btn btn-primary" href="{{ url_for('predict') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lightning-charge-fill me-1" viewBox="0 0 16 16">
+                            <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.843l-8 8.5a.5.5 0 0 1-.842-.49L6.323 9.5H3a.5.5 0 0 1-.364-.843l8-8.5a.5.5 0 0 1 .615-.09z"/>
+                        </svg>
+                        New Prediction
+                    </a>
+                    <a class="btn btn-outline-secondary" href="{{ url_for('history') }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock-history me-1" viewBox="0 0 16 16">
+                            <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+                            <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+                            <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+                        </svg>
+                        Full History
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Card -->
+        <div class="content-card">
+            <div class="d-flex align-items-center mb-4">
+                <h4 class="fw-bold mb-0 me-2">Recent Predictions</h4>
+                <span class="badge bg-success bg-opacity-10 text-success">New</span>
+            </div>
+
+            {% if recent %}
+                <div class="list-group list-group-flush" style="margin: -1.5rem; border-radius: 0 0 16px 16px;">
+                    {% for r in recent %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center px-4 py-3 border-start-0 border-end-0">
+                        <div class="d-flex align-items-center">
+                            <!-- Dot Indicator -->
+                            <span class="d-block me-3" style="width: 10px; height: 10px; background-color: var(--primary-green-light); border-radius: 50%;"></span>
+                            <div>
+                                <div class="fw-medium text-dark mb-1" style="font-size: 0.95rem;">{{ r.prediction }}</div>
+                                <small class="text-muted">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-calendar3 me-1" viewBox="0 0 16 16">
+                                        <path d="M14 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zM1 3.5h14V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v1.5zm14 1H1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9z"/>
+                                    </svg>
+                                    {{ r.created_at }}
+                                </small>
+                            </div>
+                        </div>
+                        <!-- Optional: View Detail Icon -->
+                        <a href="#" class="text-muted">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State -->
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="var(--primary-green-light)" class="bi bi-inbox" viewBox="0 0 16 16">
+                            <path d="M4.98 4a.5.5 0 0 0-.39.188L1.54 8H6a.5.5 0 0 1 .5.5 1.5 1.5 0 1 0 3 0A.5.5 0 0 1 10 8h4.46l-3.05-3.812A.5.5 0 0 0 11.02 4H4.98zm9.954 5H10.45a2.5 2.5 0 0 1-4.9 0H1.066l.32 2.562a.5.5 0 0 0 .497.438h12.234a.5.5 0 0 0 .496-.438L14.933 9zM3.809 3.563A1.5 1.5 0 0 1 4.981 3h6.038a1.5 1.5 0 0 1 1.172.563l3.7 4.625a.5.5 0 0 1 .105.374l-.39 3.124A1.5 1.5 0 0 1 14.117 13H1.883a1.5 1.5 0 0 1-1.489-1.314l-.39-3.124a.5.5 0 0 1 .106-.374l3.7-4.625z"/>
+                        </svg>
+                    </div>
+                    <h5 class="fw-medium text-dark">No Predictions Yet</h5>
+                    <p class="text-muted small mb-0">Your prediction history will appear here once you get started.</p>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* Specific styles for Dashboard elements */
+    .avatar-circle {
+        width: 56px;
+        height: 56px;
+        background: var(--primary-gradient);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 10px rgba(0, 105, 92, 0.2);
+    }
+    
+    .list-group-item {
+        border-color: #f0f0f0 !important;
+        transition: background-color 0.2s;
+    }
+    
+    .list-group-item:hover {
+        background-color: #fcfcfc;
+    }
+</style>
+{% endblock %}

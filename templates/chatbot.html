@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}AI Chatbot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="content-card mb-4">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <h3 class="fw-bold mb-1" style="color: var(--primary-green);">AI Chatbot</h3>
+                    <p class="text-muted mb-0">Ask college, placements, fees, hostel and counseling questions.</p>
+                </div>
+                <div class="d-flex flex-column align-items-end gap-1">
+                    <span class="badge bg-light text-dark border">Model: gemini-2.5-flash-lite</span>
+                    {% if langchain_enabled %}
+                    <span class="badge bg-success bg-opacity-10 text-success border">LangChain DB memory enabled</span>
+                    {% else %}
+                    <span class="badge bg-warning bg-opacity-10 text-warning border">Fallback DB memory mode</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if not gemini_available %}
+            <div class="alert alert-warning mt-3 mb-0" role="alert">
+                Gemini API is not configured. Set GEMINI_API_KEY to use the chatbot.
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="mb-0 fw-bold">Chat History</h6>
+                            <button id="newChatBtn" class="btn btn-sm btn-outline-secondary" type="button">New Chat</button>
+                        </div>
+                        <div id="sessionList" class="session-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div id="chatMessages" class="chat-area p-3"></div>
+                        <div class="chat-input-wrap p-3 border-top">
+                            <form id="chatForm" class="d-flex gap-2">
+                                <input id="chatInput" class="form-control" type="text" maxlength="1000" placeholder="Type your question..." autocomplete="off" />
+                                <button id="sendBtn" class="btn btn-primary" type="submit">Send</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.chat-area {
+    min-height: 420px;
+    max-height: 60vh;
+    overflow-y: auto;
+    background: linear-gradient(180deg, #f8fcfb 0%, #f4f9f7 100%);
+}
+.msg {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    line-height: 1.45;
+    white-space: pre-wrap;
+}
+.msg-user {
+    margin-left: auto;
+    background: #00695c;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+}
+.msg-bot {
+    margin-right: auto;
+    background: #ffffff;
+    color: #1a1a1a;
+    border: 1px solid rgba(0, 105, 92, 0.12);
+    border-bottom-left-radius: 4px;
+}
+.msg-error {
+    margin-right: auto;
+    background: #fff6f6;
+    color: #b3261e;
+    border: 1px solid rgba(179, 38, 30, 0.25);
+}
+.typing {
+    opacity: 0.7;
+    font-style: italic;
+}
+.session-list {
+    max-height: 55vh;
+    overflow-y: auto;
+}
+.session-item {
+    border: 1px solid rgba(0, 105, 92, 0.15);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fff;
+}
+.session-item:hover {
+    border-color: rgba(0, 105, 92, 0.4);
+    background: #f8fcfb;
+}
+.session-item.active {
+    border-color: var(--primary-green);
+    background: rgba(0, 105, 92, 0.07);
+}
+.session-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1a1a1a;
+}
+.session-time {
+    color: #777;
+    font-size: 0.76rem;
+}
+</style>
+
+<script id="chatBootstrapData" type="application/json">{{ {
+    'sessions': (chat_sessions or []),
+    'activeSessionKey': active_session_key,
+    'initialMessages': (initial_messages or [])
+}|tojson }}</script>
+
+<script>
+(function () {
+    const form = document.getElementById('chatForm');
+    const input = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chat = document.getElementById('chatMessages');
+    const sessionList = document.getElementById('sessionList');
+    const newChatBtn = document.getElementById('newChatBtn');
+    const bootstrapRaw = document.getElementById('chatBootstrapData').textContent || '{}';
+    const bootstrap = JSON.parse(bootstrapRaw);
+
+    let sessions = bootstrap.sessions || [];
+    let activeSessionKey = bootstrap.activeSessionKey || null;
+    let initialMessages = bootstrap.initialMessages || [];
+
+    function appendMessage(text, kind) {
+        const el = document.createElement('div');
+        el.className = 'msg ' + (kind === 'user' ? 'msg-user' : kind === 'error' ? 'msg-error' : 'msg-bot');
+        
+        let escapedText = (text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        escapedText = escapedText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        escapedText = escapedText.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        escapedText = escapedText.replace(/_(.*?)_/g, '<em>$1</em>');
+        
+        el.innerHTML = escapedText;
+        chat.appendChild(el);
+        chat.scrollTop = chat.scrollHeight;
+        return el;
+    }
+
+    function clearMessages() {
+        chat.innerHTML = '';
+    }
+
+    function renderMessages(messages) {
+        clearMessages();
+        if (!messages || !messages.length) {
+            appendMessage('Hello! I can help with TNEA college selection, placements, fees, hostel costs, and branch guidance.', 'bot');
+            return;
+        }
+        messages.forEach(function (m) {
+            appendMessage(m.content || '', m.role === 'user' ? 'user' : 'bot');
+        });
+    }
+
+    function renderSessions() {
+        sessionList.innerHTML = '';
+        if (!sessions.length) {
+            sessionList.innerHTML = '<div class="text-muted small">No chats yet</div>';
+            return;
+        }
+
+        sessions.forEach(function (s) {
+            const el = document.createElement('div');
+            el.className = 'session-item' + (s.session_key === activeSessionKey ? ' active' : '');
+            el.dataset.key = s.session_key;
+            el.innerHTML =
+                '<div class="session-title">' + (s.title || 'New Chat') + '</div>' +
+                '<div class="session-time">' + (s.updated_at || '') + '</div>';
+
+            el.addEventListener('click', function () {
+                loadSession(s.session_key);
+            });
+            sessionList.appendChild(el);
+        });
+    }
+
+    async function loadSession(sessionKey) {
+        try {
+            const res = await fetch('{{ url_for("chatbot_history", session_key="__SESSION__") }}'.replace('__SESSION__', encodeURIComponent(sessionKey)));
+            const data = await res.json();
+            if (!res.ok || !data.ok) {
+                appendMessage(data.error || 'Unable to load chat history.', 'error');
+                return;
+            }
+
+            activeSessionKey = sessionKey;
+            renderMessages(data.messages || []);
+            sessions = sessions.map(function (s) {
+                if (s.session_key === sessionKey) s.is_active = true;
+                else s.is_active = false;
+                return s;
+            });
+            renderSessions();
+        } catch (e) {
+            appendMessage('Failed to load chat session.', 'error');
+        }
+    }
+
+    async function sendMessage(message) {
+        const typingEl = appendMessage('Thinking...', 'bot');
+        typingEl.classList.add('typing');
+
+        try {
+            const res = await fetch('{{ url_for("chatbot_ask") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message, session_key: activeSessionKey })
+            });
+            const data = await res.json();
+
+            typingEl.remove();
+            if (!res.ok || !data.ok) {
+                appendMessage(data.error || 'Unable to get response.', 'error');
+                return;
+            }
+            appendMessage(data.reply || 'No response received.', 'bot');
+
+            if (data.session && data.session.session_key) {
+                activeSessionKey = data.session.session_key;
+                const existing = sessions.find(function (x) { return x.session_key === data.session.session_key; });
+                if (existing) {
+                    Object.assign(existing, data.session);
+                } else {
+                    sessions.unshift(data.session);
+                }
+                sessions.sort(function (a, b) {
+                    return (b.updated_at || '').localeCompare(a.updated_at || '');
+                });
+                renderSessions();
+            }
+        } catch (e) {
+            typingEl.remove();
+            appendMessage('Network error. Please try again.', 'error');
+        }
+    }
+
+    async function createNewChat() {
+        try {
+            const res = await fetch('{{ url_for("chatbot_new_session") }}', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await res.json();
+            if (!res.ok || !data.ok) {
+                appendMessage(data.error || 'Unable to create new chat.', 'error');
+                return;
+            }
+
+            if (data.session) {
+                activeSessionKey = data.session.session_key;
+                sessions.unshift(data.session);
+                const seen = new Set();
+                sessions = sessions.filter(function (s) {
+                    if (seen.has(s.session_key)) return false;
+                    seen.add(s.session_key);
+                    return true;
+                });
+                renderSessions();
+                renderMessages([]);
+            }
+        } catch (e) {
+            appendMessage('Unable to create new chat session.', 'error');
+        }
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const msg = (input.value || '').trim();
+        if (!msg) return;
+
+        appendMessage(msg, 'user');
+        input.value = '';
+        input.focus();
+
+        sendBtn.disabled = true;
+        await sendMessage(msg);
+        sendBtn.disabled = false;
+    });
+
+    newChatBtn.addEventListener('click', function () {
+        createNewChat();
+    });
+
+    renderSessions();
+    renderMessages(initialMessages);
+})();
+</script>
+{% endblock %}
