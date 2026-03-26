@@ -1702,5 +1702,138 @@ def home():
     return render_template('home.html')
 
 
+# --- ADMIN MODULE ---
+ADMIN_USERNAME = os.getenv('ADMIN_USERNAME', 'admin')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin123')
+
+def save_colleges_dataset():
+    global colleges_df
+    try:
+        # Do not save internal computation columns
+        save_df = colleges_df.drop(columns=['_name_lower', 'gap', 'abs_gap', 'district_match'], errors='ignore')
+        save_df.to_csv(CSV_PATH, index=False)
+        return True
+    except Exception as e:
+        print("Error saving CSV:", e)
+        return False
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+            session['is_admin'] = True
+            flash('Admin logged in successfully', 'success')
+            return redirect(url_for('admin'))
+        else:
+            flash('Invalid admin credentials', 'danger')
+            return render_template('admin_login.html')
+            
+    if session.get('is_admin'):
+        return render_template('admin.html')
+    return render_template('admin_login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('is_admin', None)
+    flash('Admin logged out', 'info')
+    return redirect(url_for('home'))
+
+@app.route('/api/admin/colleges', methods=['GET'])
+def admin_get_colleges():
+    if not session.get('is_admin'):
+        return jsonify({'ok': False, 'error': 'Unauthorized'}), 401
+    
+    if colleges_df.empty:
+        return jsonify({'ok': True, 'colleges': []})
+    
+    # Safely convert to json-compliant dicts avoiding numpy type errors
+    json_str = colleges_df.to_json(orient='records')
+    data = json.loads(json_str)
+    
+    for idx, row in enumerate(data):
+        row['_id'] = idx
+    
+    return jsonify({'ok': True, 'colleges': data})
+
+@app.route('/api/admin/college/add', methods=['POST'])
+def admin_add_college():
+    if not session.get('is_admin'):
+        return jsonify({'ok': False, 'error': 'Unauthorized'}), 401
+    
+    global colleges_df
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'ok': False, 'error': 'No data provided'}), 400
+        
+        new_row = {
+            'cut_off': float(data.get('cut_off') or 0),
+            'previous_year_cutoff': float(data.get('previous_year_cutoff') or 0),
+            'rank': int(data.get('rank') or 0),
+            'branch': str(data.get('branch', '')),
+            'category': str(data.get('category', '')),
+            'district': str(data.get('district', '')),
+            'sports_quota': str(data.get('sports_quota', 'No')),
+            'college_name': str(data.get('college_name', '')),
+            'college_fees': float(data.get('college_fees') or 0),
+            '_name_lower': str(data.get('college_name', '')).lower()
+        }
+        
+        new_df = pd.DataFrame([new_row])
+        colleges_df = pd.concat([colleges_df, new_df], ignore_index=True)
+        save_colleges_dataset()
+        
+        return jsonify({'ok': True})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+@app.route('/api/admin/college/update', methods=['POST'])
+def admin_update_college():
+    if not session.get('is_admin'):
+        return jsonify({'ok': False, 'error': 'Unauthorized'}), 401
+        
+    global colleges_df
+    try:
+        data = request.get_json()
+        idx = data.get('_id')
+        if idx is None or idx < 0 or idx >= len(colleges_df):
+            return jsonify({'ok': False, 'error': 'Invalid ID'}), 400
+            
+        colleges_df.at[idx, 'cut_off'] = float(data.get('cut_off') or 0)
+        colleges_df.at[idx, 'previous_year_cutoff'] = float(data.get('previous_year_cutoff') or 0)
+        colleges_df.at[idx, 'rank'] = int(data.get('rank') or 0)
+        colleges_df.at[idx, 'branch'] = str(data.get('branch', ''))
+        colleges_df.at[idx, 'category'] = str(data.get('category', ''))
+        colleges_df.at[idx, 'district'] = str(data.get('district', ''))
+        colleges_df.at[idx, 'sports_quota'] = str(data.get('sports_quota', 'No'))
+        colleges_df.at[idx, 'college_name'] = str(data.get('college_name', ''))
+        colleges_df.at[idx, 'college_fees'] = float(data.get('college_fees') or 0)
+        colleges_df.at[idx, '_name_lower'] = str(data.get('college_name', '')).lower()
+        
+        save_colleges_dataset()
+        return jsonify({'ok': True})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+@app.route('/api/admin/college/delete', methods=['POST'])
+def admin_delete_college():
+    if not session.get('is_admin'):
+        return jsonify({'ok': False, 'error': 'Unauthorized'}), 401
+        
+    global colleges_df
+    try:
+        data = request.get_json()
+        idx = data.get('_id')
+        if idx is None or idx < 0 or idx >= len(colleges_df):
+            return jsonify({'ok': False, 'error': 'Invalid ID'}), 400
+            
+        colleges_df = colleges_df.drop(idx).reset_index(drop=True)
+        save_colleges_dataset()
+        return jsonify({'ok': True})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True)
