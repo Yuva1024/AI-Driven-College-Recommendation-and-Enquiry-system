@@ -4,172 +4,212 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-lg-10">
-        
-        <!-- Header Section -->
+    <div class="col-lg-11">
+
+        <!-- Header -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h3 class="fw-bold mb-1">Prediction History</h3>
-                <p class="text-muted mb-0">Review your previous searches and results.</p>
+                <p class="text-muted mb-0">Your past TNEA college searches — all saved automatically.</p>
             </div>
             {% if history %}
-            <span class="badge bg-success bg-opacity-10 text-success px-3 py-2" style="font-size: 0.9rem;">
-                {{ history|length }} Records
+            <span class="badge px-3 py-2" style="background:rgba(0,105,92,.1);color:var(--primary-green);font-size:.9rem;">
+                {{ history|length }} Search{{ 'es' if history|length != 1 else '' }}
             </span>
             {% endif %}
         </div>
 
-        <div class="content-card">
-            {% if history %}
-                <div class="table-responsive">
-                    <table class="table table-modern">
-                        <thead>
-                            <tr>
-                                <th scope="col" style="width: 60px;">#</th>
-                                <th scope="col">Result</th>
-                                <th scope="col">Parameters Used</th>
-                                <th scope="col" style="width: 200px;">Other Options</th>
-                                <th scope="col" style="width: 130px;">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in history %}
-                            <tr>
-                                <td class="text-center align-middle">
-                                    <span class="fw-bold text-muted">{{ loop.index }}</span>
-                                </td>
-                                
-                                <!-- Main Prediction -->
-                                <td class="align-middle">
-                                    <div class="d-flex align-items-center">
-                                        <div class="icon-box-sm bg-success bg-opacity-10 text-success me-3">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mortarboard" viewBox="0 0 16 16">
-                                                <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 0 .906l7.5 3.5a.5.5 0 0 0 .422 0l7.5-3.5a.5.5 0 0 0 0-.906l-7.5-3.5ZM8 8.97a.5.5 0 0 0 .211-.047L13.5 6.5l-5.289-2.423A.5.5 0 0 0 8 4.03v4.94Z"/>
-                                                <path d="M4.002 8.05a.5.5 0 0 0-.422.906l3.5 1.5a.5.5 0 0 0 .422 0l3.5-1.5a.5.5 0 0 0-.422-.906L8 9.354l-3.998-1.304Z"/>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div class="fw-bold text-dark">{{ item.prediction }}</div>
-                                            <small class="text-muted">Top Choice</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                
-                                <!-- Input Parameters -->
-                                <td class="align-middle">
-                                    {% if item.input %}
-                                    <div class="d-flex flex-wrap gap-1">
-                                        <span class="badge bg-light text-dark border">Rank: {{ item.input.rank }}</span>
-                                        <span class="badge bg-light text-dark border">Cutoff: {{ item.input.cut_off }}</span>
-                                    </div>
-                                    {% else %}
-                                    <span class="text-muted small">N/A</span>
-                                    {% endif %}
-                                </td>
-                                
-                                <!-- Top Predictions List -->
-                                <td class="align-middle">
-                                    {% if item.top_predictions %}
-                                    <ul class="list-unstyled mb-0 prediction-list">
-                                        {% for c, p in item.top_predictions %}
-                                        <li class="d-flex justify-content-between small mb-1">
-                                            <span class="text-truncate me-2" style="max-width: 120px;">{{ c }}</span>
-                                            <span class="text-muted flex-shrink-0">{{ "%.1f" % (p*100) }}%</span>
-                                        </li>
-                                        {% endfor %}
-                                    </ul>
-                                    {% else %}
-                                    <span class="text-muted small">-</span>
-                                    {% endif %}
-                                </td>
-                                
-                                <!-- Date -->
-                                <td class="align-middle text-muted small text-end">
-                                    {{ item.created_at }}
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% else %}
-                <!-- Empty State -->
-                <div class="text-center py-5">
-                    <div class="mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="var(--primary-green-light)" class="bi bi-journal-x" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M6.146 6.146a.5.5 0 0 1 .708 0L8 7.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 8l1.147 1.146a.5.5 0 0 1-.708.708L8 8.707 6.854 9.854a.5.5 0 0 1-.708-.708L7.293 8 6.146 6.854a.5.5 0 0 1 0-.708z"/>
-                            <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2z"/>
-                            <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1H1z"/>
-                        </svg>
+        {% if history %}
+            <div class="history-list">
+            {% for item in history %}
+                <div class="history-card">
+
+                    <!-- Card Header -->
+                    <div class="hc-header">
+                        <div class="hc-num">#{{ loop.index }}</div>
+                        <div class="hc-title-group">
+                            {% if item.input.get('cutoff') %}
+                                <span class="hc-cutoff">{{ "%.2f"|format(item.input.cutoff) }}<span class="hc-cutoff-max">/200</span></span>
+                                <span class="hc-label">Cutoff Score</span>
+                            {% elif item.prediction %}
+                                <span class="hc-cutoff" style="font-size:1rem;">{{ item.prediction }}</span>
+                                <span class="hc-label">Top Result</span>
+                            {% endif %}
+                        </div>
+                        <div class="hc-badges">
+                            {% if item.input.get('category') %}
+                                <span class="hc-badge cat">{{ item.input.category }}</span>
+                            {% endif %}
+                            {% if item.input.get('district') and item.input.district != 'Any' %}
+                                <span class="hc-badge dist">📍 {{ item.input.district }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="hc-date">{{ item.created_at[:16].replace('T',' ') if 'T' in item.created_at else item.created_at[:16] }}</div>
                     </div>
-                    <h5 class="fw-medium text-dark">No History Found</h5>
-                    <p class="text-muted">You haven't made any predictions yet.</p>
-                    <a href="{{ url_for('predict') }}" class="btn btn-primary mt-2">
-                        Make your first Prediction
-                    </a>
+
+                    <!-- Marks Row (new format) -->
+                    {% if item.input.get('maths') is not none or item.input.get('physics') is not none %}
+                    <div class="hc-marks">
+                        <div class="hc-mark-item">
+                            <span class="hc-mark-val">{{ item.input.get('maths', '–') }}</span>
+                            <span class="hc-mark-label">Maths</span>
+                        </div>
+                        <div class="hc-mark-sep">+</div>
+                        <div class="hc-mark-item">
+                            <span class="hc-mark-val">{{ item.input.get('physics', '–') }}</span>
+                            <span class="hc-mark-label">Physics</span>
+                        </div>
+                        <div class="hc-mark-sep">+</div>
+                        <div class="hc-mark-item">
+                            <span class="hc-mark-val">{{ item.input.get('chemistry', '–') }}</span>
+                            <span class="hc-mark-label">Chemistry</span>
+                        </div>
+                        <div class="hc-mark-sep">=</div>
+                        <div class="hc-mark-item hc-cutoff-mini">
+                            <span class="hc-mark-val green">{{ "%.1f"|format(item.input.cutoff) if item.input.get('cutoff') else '–' }}</span>
+                            <span class="hc-mark-label">Cutoff</span>
+                        </div>
+                    </div>
+                    {% elif item.input.get('rank') or item.input.get('cut_off') %}
+                    <!-- Old format -->
+                    <div class="hc-marks">
+                        {% if item.input.get('rank') %}
+                        <div class="hc-mark-item">
+                            <span class="hc-mark-val">{{ item.input.rank }}</span>
+                            <span class="hc-mark-label">Rank</span>
+                        </div>
+                        {% endif %}
+                        {% if item.input.get('cut_off') %}
+                        <div class="hc-mark-item">
+                            <span class="hc-mark-val green">{{ item.input.cut_off }}</span>
+                            <span class="hc-mark-label">Cutoff</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Matched Colleges (new format — list of dicts) -->
+                    {% if item.top_colleges %}
+                    <div class="hc-colleges">
+                        <div class="hc-section-label">Top Matched Colleges</div>
+                        <div class="hc-college-grid">
+                            {% for col in item.top_colleges %}
+                            <div class="hc-col-item">
+                                <div class="hc-col-name">{{ col.name }}</div>
+                                <div class="hc-col-meta">
+                                    {% if col.district %}<span>📍 {{ col.district }}</span>{% endif %}
+                                    {% if col.chance_level %}
+                                        <span class="hc-chance {{ col.chance_level }}">
+                                            {{ col.chance_level|capitalize }}
+                                        </span>
+                                    {% endif %}
+                                    {% if col.fee_min %}
+                                        <span class="hc-fee">₹{{ "{:,.0f}".format(col.fee_min) }}/yr</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Old format — list of strings -->
+                    {% elif item.top_names %}
+                    <div class="hc-colleges">
+                        <div class="hc-section-label">Top Results</div>
+                        <div class="hc-college-grid">
+                            {% for name in item.top_names %}
+                            <div class="hc-col-item">
+                                <div class="hc-col-name">{{ name }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Footer -->
+                    <div class="hc-footer">
+                        {% set m = item.input.get('maths', '') %}
+                        {% set p = item.input.get('physics', '') %}
+                        {% set c = item.input.get('chemistry', '') %}
+                        {% set cat = item.input.get('category', 'OC') %}
+                        {% set dist = item.input.get('district', '') %}
+                        <a href="{{ url_for('predict') }}?maths={{ m }}&physics={{ p }}&chemistry={{ c }}&category={{ cat }}&district={{ dist }}"
+                           class="hc-replay-btn">🔁 Search Again</a>
+                    </div>
                 </div>
-            {% endif %}
-        </div>
+            {% endfor %}
+            </div>
+
+        {% else %}
+            <!-- Empty State -->
+            <div class="content-card text-center py-5">
+                <div class="mb-3 mx-auto" style="width:70px;height:70px;background:rgba(0,105,92,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--primary-green)" viewBox="0 0 16 16">
+                        <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 0 .906l7.5 3.5a.5.5 0 0 0 .422 0l7.5-3.5a.5.5 0 0 0 0-.906l-7.5-3.5Z"/>
+                        <path d="M4.002 8.05a.5.5 0 0 0-.422.906l3.5 1.5a.5.5 0 0 0 .422 0l3.5-1.5a.5.5 0 0 0-.422-.906L8 9.354l-3.998-1.304Z"/>
+                    </svg>
+                </div>
+                <h5 class="fw-semibold">No History Yet</h5>
+                <p class="text-muted">Make your first prediction and it'll appear here automatically.</p>
+                <a href="{{ url_for('predict') }}" class="btn btn-primary mt-2">Find My Colleges →</a>
+            </div>
+        {% endif %}
+
     </div>
 </div>
 
 <style>
-    /* Small Icon Box for Table */
-    .icon-box-sm {
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+:root { --primary-green:#00695c; }
 
-    /* Prediction List Styling inside Table */
-    .prediction-list li {
-        line-height: 1.3;
-    }
+/* History List */
+.history-list { display:flex; flex-direction:column; gap:16px; }
 
-    /* Modern Table Styling */
-    .table-modern {
-        border-collapse: separate;
-        border-spacing: 0 10px;
-        margin: -10px; /* Offset the spacing for outer alignment */
-    }
-    
-    .table-modern thead th {
-        border: none;
-        color: #888;
-        font-weight: 600;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 10px 16px;
-    }
-    
-    .table-modern tbody tr {
-        background-color: #fff;
-        transition: all 0.2s;
-    }
-    
-    .table-modern tbody tr:hover {
-        background-color: #fcfcfc;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    }
+/* Card */
+.history-card { background:#fff; border-radius:16px; border:1px solid #eee; box-shadow:0 2px 12px rgba(0,0,0,.04); overflow:hidden; transition:box-shadow .2s; }
+.history-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.08); }
 
-    .table-modern tbody td {
-        padding: 16px;
-        vertical-align: middle;
-        border: none;
-    }
+/* Card Header */
+.hc-header { display:flex; align-items:center; gap:16px; padding:16px 20px 12px; background:#fafafa; border-bottom:1px solid #f0f0f0; flex-wrap:wrap; }
+.hc-num { width:32px; height:32px; border-radius:50%; background:var(--primary-green); color:#fff; display:flex; align-items:center; justify-content:center; font-size:.8rem; font-weight:700; flex-shrink:0; }
+.hc-title-group { display:flex; align-items:baseline; gap:6px; }
+.hc-cutoff { font-size:1.4rem; font-weight:800; color:var(--primary-green); }
+.hc-cutoff-max { font-size:.75rem; font-weight:400; color:#aaa; }
+.hc-label { font-size:.72rem; color:#aaa; text-transform:uppercase; letter-spacing:.5px; }
+.hc-badges { display:flex; gap:6px; flex-wrap:wrap; }
+.hc-badge { padding:3px 10px; border-radius:20px; font-size:.72rem; font-weight:600; }
+.hc-badge.cat { background:rgba(0,105,92,.1); color:var(--primary-green); }
+.hc-badge.dist { background:#f0f4f8; color:#555; }
+.hc-date { margin-left:auto; font-size:.75rem; color:#bbb; white-space:nowrap; }
 
-    /* Row Border Radius Effect */
-    .table-modern tbody tr td:first-child {
-        border-top-left-radius: 12px;
-        border-bottom-left-radius: 12px;
-    }
-    .table-modern tbody tr td:last-child {
-        border-top-right-radius: 12px;
-        border-bottom-right-radius: 12px;
-    }
+/* Marks Row */
+.hc-marks { display:flex; align-items:center; gap:10px; padding:12px 20px; border-bottom:1px solid #f5f5f5; flex-wrap:wrap; }
+.hc-mark-item { text-align:center; }
+.hc-mark-val { display:block; font-size:1.1rem; font-weight:700; color:#1a1a1a; }
+.hc-mark-val.green { color:var(--primary-green); }
+.hc-mark-label { display:block; font-size:.68rem; color:#aaa; text-transform:uppercase; letter-spacing:.4px; }
+.hc-mark-sep { font-size:1rem; color:#ccc; font-weight:300; }
+
+/* Colleges */
+.hc-colleges { padding:14px 20px; }
+.hc-section-label { font-size:.72rem; text-transform:uppercase; letter-spacing:.7px; color:var(--primary-green); font-weight:700; margin-bottom:10px; }
+.hc-college-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(250px,1fr)); gap:8px; }
+.hc-col-item { background:#f8faf9; border-radius:10px; padding:10px 14px; border:1px solid rgba(0,105,92,.06); }
+.hc-col-name { font-size:.88rem; font-weight:600; color:#1a1a1a; margin-bottom:4px; }
+.hc-col-meta { display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:.72rem; color:#888; }
+.hc-chance { padding:1px 8px; border-radius:8px; font-weight:600; }
+.hc-chance.high { background:rgba(22,163,74,.1); color:#16a34a; }
+.hc-chance.moderate { background:rgba(245,158,11,.1); color:#d97706; }
+.hc-chance.low { background:rgba(239,68,68,.1); color:#ef4444; }
+.hc-fee { background:rgba(0,105,92,.06); color:var(--primary-green); padding:1px 8px; border-radius:8px; }
+
+/* Footer */
+.hc-footer { padding:10px 20px; border-top:1px solid #f5f5f5; display:flex; justify-content:flex-end; }
+.hc-replay-btn { font-size:.82rem; color:var(--primary-green); text-decoration:none; font-weight:600; padding:4px 14px; border-radius:20px; background:rgba(0,105,92,.06); transition:background .15s; }
+.hc-replay-btn:hover { background:rgba(0,105,92,.12); color:var(--primary-green); }
+
+@media(max-width:600px) {
+    .hc-header { gap:10px; }
+    .hc-college-grid { grid-template-columns:1fr; }
+}
 </style>
 {% endblock %}

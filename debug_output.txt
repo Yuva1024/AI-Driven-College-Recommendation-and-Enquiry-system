@@ -1,0 +1,18 @@
+BRANCHES: ['Aerospace', 'Biotech', 'CSE', 'Chemical', 'Civil', 'ECE', 'EEE', 'EIE', 'IT', 'Mechanical']
+CATEGORIES: ['BC', 'MBC', 'OC', 'SC', 'ST']
+DISTRICTS: ['Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore', 'Dharmapuri', 'Dindigul', 'Erode', 'Kallakurichi', 'Kancheepuram', 'Kanyakumari', 'Karur', 'Krishnagiri', 'Madurai', 'Nagapattinam', 'Namakkal', 'Perambalur', 'Pudukkottai', 'Ramanathapuram', 'Ranipet', 'Salem', 'Sivagangai', 'Tenkasi', 'Thanjavur', 'Theni', 'Thiruvallur', 'Thiruvarur', 'Thoothukkudi', 'Tirunelveli', 'Trichy', 'Vellore', 'Villupuram', 'Virudhunagar']
+UNIQUE COLLEGES: 243
+ROWS: 25000
+
+Sample grouping (first 5):
+                                                             min  ...  count
+college_name                           branch    category         ...       
+A.R. Engineering College - Villivakkam Aerospace MBC       130.0  ...      2
+                                                 OC        137.0  ...      1
+                                                 SC        130.0  ...      1
+                                                 ST        130.0  ...      2
+                                       Biotech   BC        130.0  ...      3
+
+[5 rows x 4 columns]
+
+College+Branch combos: 2429

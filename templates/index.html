@@ -1,298 +1,973 @@
 {% extends "base.html" %}
 
-{% block title %}TNEA College Predictor{% endblock %}
+{% block title %}TNEA College Predictor — Find Your Best Engineering College{% endblock %}
 
 {% block content %}
 
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        
-        <!-- Header Section -->
-        <div class="text-center mb-5">
-            <div class="mb-3 mx-auto" style="width: 60px; height: 60px; background: rgba(0, 105, 92, 0.08); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="var(--primary-green)" class="bi bi-search-heart" viewBox="0 0 16 16">
-                    <path d="M6.5 4.482c.663 0 1.2.497 1.2 1.11 0 .618-.537 1.11-1.2 1.11s-1.2-.492-1.2-1.11c0-.613.537-1.11 1.2-1.11zM3 5.59c0-.613.537-1.11 1.2-1.11s1.2.497 1.2 1.11c0 .618-.537 1.11-1.2 1.11S3 6.207 3 5.59zm6.8 0c0-.613.537-1.11 1.2-1.11s1.2.497 1.2 1.11c0 .618-.537 1.11-1.2 1.11s-1.2-.492-1.2-1.11z"/>
-                    <path d="M12.5 8.5a.5.5 0 0 0 0 1h.5v1.5a.5.5 0 0 0 1 0V9.5h.5a.5.5 0 0 0 0-1h-.5V7a.5.5 0 0 0-1 0v1.5h-.5zM8 9a1 1 0 0 1 1-1h.5a.5.5 0 0 1 0 1H9a.5.5 0 0 0-.5.5v1.5a.5.5 0 0 1-1 0V10a.5.5 0 0 0-.5-.5h-.5a.5.5 0 0 1 0-1H7a1 1 0 0 1 1 1z"/>
-                    <path d="M8 1a7 7 0 1 0 3.315 13.186l.37.37a.5.5 0 0 0 .496.132l3.26-1.08a.5.5 0 0 0 .286-.573l-.882-3.52a.5.5 0 0 0-.39-.367 7.03 7.03 0 0 0-.67-.174A7 7 0 0 0 8 1zm0 1a6 6 0 0 1 4.89 9.478.5.5 0 0 0-.09.17l.745 2.975-2.37.784a.5.5 0 0 0-.23.152l-.424.425A6 6 0 1 1 8 2z"/>
-                </svg>
-            </div>
-            <h2 class="fw-bold" style="color: var(--text-dark);">TNEA College Predictor</h2>
-            <p class="text-muted mt-2">Enter your details to get ML-driven college predictions</p>
+<!-- ═══════════════════════════════════════════════════
+     HERO INTRO (shown before any search)
+     ═══════════════════════════════════════════════════ -->
+<div id="heroSection" class="text-center mb-4">
+    <div class="d-flex justify-content-center mb-3">
+        <div class="position-relative" style="width:100%; max-width:500px; box-shadow: 0 4px 15px rgba(0,105,92,0.1); border-radius: 8px;">
+            <input type="text" list="globalCollegesList" class="form-control form-control-lg text-center" placeholder="🔍 Search any college directly..." onchange="if(this.value){ viewCollege(this.value); this.value=''; }">
+            <datalist id="globalCollegesList">
+                {% for c in all_colleges %}
+                <option value="{{ c }}">
+                {% endfor %}
+            </datalist>
         </div>
-
-        {% if error %}
-        <div class="alert alert-danger d-flex align-items-center mb-4">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
-                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-            </svg>
-            <div>{{ error }}</div>
-        </div>
-        {% endif %}
-
-        <!-- Form Card -->
-        <div class="content-card mb-5">
-            <form method="POST">
-                <div class="row g-4">
-                    
-                    <!-- Rank & Cutoff -->
-                    <div class="col-md-6">
-                        <label class="form-label">TNEA Rank</label>
-                        <input type="number" name="rank" class="form-control" min="1" max="30000" value="{{ input_data.rank|default(5000) }}" required placeholder="e.g. 5000">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Cut-off Marks</label>
-                        <input type="number" step="0.5" name="cut_off" class="form-control" min="50" max="200" value="{{ input_data.cut_off|default(180.0) }}" required placeholder="e.g. 180.0">
-                    </div>
-
-                    <!-- Prev Cutoff & Category -->
-                    <div class="col-md-6">
-                        <label class="form-label">Previous Year Cutoff (Approx)</label>
-                        <input type="number" step="0.5" name="previous_year_cutoff" class="form-control" min="50" max="200" value="{{ input_data.previous_year_cutoff|default(175.0) }}" placeholder="Optional">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Community / Category</label>
-                        <select name="category" class="form-select" required>
-                            {% for cat in ['OC', 'BC', 'BCM', 'MBC', 'DNC', 'SC', 'SCA', 'ST'] %}
-                            <option value="{{ cat }}" {% if input_data.category == cat %}selected{% endif %}>{{ cat }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <!-- Branch & District -->
-                    <div class="col-md-6">
-                        <label class="form-label">Preferred Branch</label>
-                        <select name="branch" class="form-select" required>
-                            {% for b in ['CSE','IT','ECE','EEE','Mechanical','Civil','Chemical','Aerospace','Biotech','EIE'] %}
-                            <option value="{{ b }}" {% if input_data.branch == b %}selected{% endif %}>{{ b }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label">Preferred District</label>
-                        <select name="district" class="form-select" required>
-                            {% for d in ['Chennai','Coimbatore','Vellore','Tiruchirappalli','Madurai','Salem','Tirunelveli','others'] %}
-                            <option value="{{ d }}" {% if input_data.district == d %}selected{% endif %}>{{ d }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <!-- Fees & Sports Quota -->
-                    <div class="col-md-6">
-                        <label class="form-label">Max Acceptable Fees (₹)</label>
-                        <input type="number" name="college_fees" class="form-control" min="50000" max="300000" value="{{ input_data.college_fees|default(150000) }}" step="10000">
-                    </div>
-
-                    <div class="col-md-6">
-                        <label class="form-label d-block">Sports Quota?</label>
-                        <div class="btn-group w-100 mt-1" role="group">
-                            <input type="radio" class="btn-check" name="sports_quota" id="sportsNo" value="No" autocomplete="off" {% if not input_data or input_data.sports_quota != 'Yes' %}checked{% endif %}>
-                            <label class="btn btn-outline-secondary" for="sportsNo">No</label>
-
-                            <input type="radio" class="btn-check" name="sports_quota" id="sportsYes" value="Yes" autocomplete="off" {% if input_data and input_data.sports_quota == 'Yes' %}checked{% endif %}>
-                            <label class="btn btn-outline-secondary" for="sportsYes">Yes</label>
-                        </div>
-                    </div>
-
-                    <!-- Number of Predictions -->
-                    <div class="col-md-6">
-                        <label class="form-label">Number of Predictions</label>
-                        <select name="top_n" class="form-select">
-                            <option value="3" {% if not top_predictions or request.form.top_n|default('3') == '3' %}selected{% endif %}>Top 3</option>
-                            <option value="5" {% if request.form.top_n == '5' %}selected{% endif %}>Top 5</option>
-                            <option value="7" {% if request.form.top_n == '7' %}selected{% endif %}>Top 7</option>
-                        </select>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="col-12 text-center mt-4">
-                        <button type="submit" class="btn btn-primary btn-lg px-5">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-cpu me-2" viewBox="0 0 16 16">
-                                <path d="M5 0a.5.5 0 0 1 .5.5V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2h1V.5a.5.5 0 0 1 1 0V2A2.5 2.5 0 0 1 14 4.5h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14v1h1.5a.5.5 0 0 1 0 1H14a2.5 2.5 0 0 1-2.5 2.5v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14h-1v1.5a.5.5 0 0 1-1 0V14A2.5 2.5 0 0 1 2 11.5H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2v-1H.5a.5.5 0 0 1 0-1H2A2.5 2.5 0 0 1 4.5 2V.5A.5.5 0 0 1 5 0zm-.5 3A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 11.5 3h-7zM5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3zM6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5h-3z"/>
-                            </svg>
-                            Predict Colleges
-                        </button>
-                    </div>
-
-                </div>
-            </form>
-        </div>
-
-        <!-- Results Section -->
-        {% if prediction %}
-        <div class="content-card" style="border-top: 4px solid var(--primary-green);">
-            <div class="text-center mb-4">
-                <span class="badge bg-success bg-opacity-10 text-success mb-2">Prediction Result</span>
-                <h3 class="fw-bold mb-0">{{ prediction }}</h3>
-                <small class="text-muted">Most likely college based on your inputs</small>
-            </div>
-
-            {% if fees_info or placements_info %}
-            <div class="row mb-4">
-                <div class="col-md-6 mb-3 mb-md-0">
-                    <div class="p-3 h-100" style="background: #f8f9fa; border-radius: 10px;">
-                        <h6 class="text-uppercase text-muted small mb-2">Fees Structure</h6>
-                        {% if fees_info %}
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="fw-medium">Average:</span>
-                            <span>₹{{ fees_info.mean|int }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-medium">Range:</span>
-                            <span>₹{{ fees_info.min|int }} - ₹{{ fees_info.max|int }}</span>
-                        </div>
-                        {% else %}
-                        <p class="text-muted mb-0 small">Data not available for this college.</p>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="p-3 h-100" style="background: #f8f9fa; border-radius: 10px;">
-                        <h6 class="text-uppercase text-muted small mb-2">Placements</h6>
-                        {% if placements_info %}
-                        <p class="mb-0">{{ placements_info }}</p>
-                        {% if placements_source %}
-                        <small class="text-muted d-block mt-1">Source: {{ placements_source }}</small>
-                        {% endif %}
-                        {% else %}
-                        <p class="text-muted mb-0 small">
-                            {% if not gemini_available %}
-                            External lookup disabled (API key missing).
-                            {% else %}
-                            Data not available.
-                            {% endif %}
-                        </p>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Predictions Table -->
-            <h5 class="fw-bold mb-3">Alternative Options</h5>
-            <div class="table-responsive">
-                <table class="table table-modern">
-                    <thead>
-                        <tr>
-                            <th scope="col" style="width: 50px;">#</th>
-                            <th scope="col">College</th>
-                            <th scope="col" style="width: 120px;">Probability</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% if top_predictions_detailed %}
-                            {% for item in top_predictions_detailed %}
-                            <tr>
-                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
-                                <td>
-                                    <div class="fw-medium">{{ item.college }}</div>
-                                    {% if item.placements %}
-                                    <small class="text-muted d-block" style="font-size: 0.8rem;">
-                                        {{ item.placements }} 
-                                        {% if item.placements_source %}({{ item.placements_source }}){% endif %}
-                                    </small>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="progress flex-grow-1 me-2" style="height: 6px; background: #eee;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ (item.prob*100) }}%;" aria-valuenow="{{ (item.prob*100) }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <span class="fw-bold small">{{ "%.1f" % (item.prob*100) }}%</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% else %}
-                            {% for college, prob in top_predictions %}
-                            <tr>
-                                <td class="text-center fw-bold text-muted">{{ loop.index }}</td>
-                                <td class="fw-medium">{{ college }}</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="progress flex-grow-1 me-2" style="height: 6px; background: #eee;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ (prob*100) }}%;" aria-valuenow="{{ (prob*100) }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                        <span class="fw-bold small">{{ "%.1f" % (prob*100) }}%</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        {% endif %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {% endif %}
-
-        <hr class="my-5">
-
-        <p class="text-center text-muted small">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-info-circle me-1" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-            </svg>
-            This is an ML-based approximation — always verify with official TNEA counselling data.
-        </p>
-
+    </div>
+    <p class="text-muted mt-1 mb-4" style="max-width:620px;margin:0 auto;">
+        Enter your Class 12 marks and instantly discover which Tamil Nadu engineering colleges you qualify for — ranked by your admission probability.
+    </p>
+    <div class="d-flex justify-content-center gap-4 flex-wrap mb-2">
+        <div class="stat-pill"><strong>25,000+</strong><span>Records analysed</span></div>
+        <div class="stat-pill"><strong>243</strong><span>Colleges covered</span></div>
+        <div class="stat-pill"><strong>2025</strong><span>Cutoff data year</span></div>
     </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════
+     MARKS INPUT FORM
+     ═══════════════════════════════════════════════════ -->
+<div class="content-card predictor-card mb-4" style="border-top:4px solid var(--primary-green);">
+    <div class="row g-3 align-items-end">
+        <!-- Maths -->
+        <div class="col-md-3 col-6">
+            <label class="form-label fw-semibold">Mathematics <span class="text-danger">*</span></label>
+            <div class="mark-input-wrap">
+                <input type="number" id="marksMaths" class="form-control form-control-lg mark-input" min="0" max="100" value="" placeholder="0 – 100" required>
+                <span class="mark-hint" id="hintMaths"></span>
+                <div class="mark-bar"><div class="mark-bar-fill" id="barMaths"></div></div>
+            </div>
+        </div>
+        <!-- Physics -->
+        <div class="col-md-3 col-6">
+            <label class="form-label fw-semibold">Physics <span class="text-danger">*</span></label>
+            <div class="mark-input-wrap">
+                <input type="number" id="marksPhysics" class="form-control form-control-lg mark-input" min="0" max="100" value="" placeholder="0 – 100" required>
+                <span class="mark-hint" id="hintPhysics"></span>
+                <div class="mark-bar"><div class="mark-bar-fill" id="barPhysics"></div></div>
+            </div>
+        </div>
+        <!-- Chemistry -->
+        <div class="col-md-3 col-6">
+            <label class="form-label fw-semibold">Chemistry <span class="text-danger">*</span></label>
+            <div class="mark-input-wrap">
+                <input type="number" id="marksChemistry" class="form-control form-control-lg mark-input" min="0" max="100" value="" placeholder="0 – 100" required>
+                <span class="mark-hint" id="hintChemistry"></span>
+                <div class="mark-bar"><div class="mark-bar-fill" id="barChemistry"></div></div>
+            </div>
+        </div>
+        <!-- Live Cutoff Display -->
+        <div class="col-md-3 col-6">
+            <div class="cutoff-display" id="cutoffCard">
+                <div class="cutoff-label">YOUR CUTOFF SCORE</div>
+                <div class="cutoff-value" id="cutoffValue">0.00</div>
+                <div class="cutoff-sub">out of 200</div>
+                <div class="cutoff-breakdown">
+                    <span>M <strong id="bdM">0</strong></span>
+                    <span>P <strong id="bdP">0</strong></span>
+                    <span>C <strong id="bdC">0</strong></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category + District + Sort Row -->
+    <div class="row g-3 mt-3">
+        <!-- Category Pills -->
+        <div class="col-md-4">
+            <label class="form-label section-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/><path d="M2 13c0 1 1 1 1 1h10s1 0 1-1-1-4-6-4-6 3-6 4z"/></svg>
+                CATEGORY
+            </label>
+            <div class="pill-group" id="categoryPills">
+                {% for cat in all_categories %}
+                <button type="button" class="pill-btn {% if cat == 'OC' %}active{% endif %}" data-value="{{ cat }}">{{ cat }}</button>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- District Dropdown -->
+        <div class="col-md-4">
+            <label class="form-label section-label">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg>
+                DISTRICT &amp; SORT
+            </label>
+            <div class="d-flex gap-2">
+                <select id="districtSelect" class="form-select">
+                    <option value="">Any District</option>
+                    {% for d in all_districts %}
+                    <option value="{{ d }}">{{ d }}</option>
+                    {% endfor %}
+                </select>
+                <select id="sortSelect" class="form-select">
+                    <option value="best_match">Best Match</option>
+                    <option value="cutoff_high">Cutoff: High → Low</option>
+                    <option value="cutoff_low">Cutoff: Low → High</option>
+                    <option value="fees_low">Fees: Low → High</option>
+                    <option value="fees_high">Fees: High → Low</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Find Button -->
+        <div class="col-md-4 d-flex align-items-end">
+            <button type="button" id="findBtn" class="btn btn-primary btn-lg w-100 find-btn" onclick="doPredict()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M0 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2zm4-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-5zm4-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-8zm4-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-11z"/></svg>
+                Find My Colleges →
+            </button>
+        </div>
+    </div>
+
+    <!-- Optional Filters Row (Search & Budget) -->
+    <div class="budget-row mt-4 pt-3" style="border-top:1px dashed #e0e0e0;">
+        <div class="row align-items-center mb-3">
+            <div class="col-md-6 mb-2 mb-md-0">
+                <label class="form-label section-label mb-1" style="font-size:0.75rem;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="me-1 mb-1" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>
+                    NAME FILTER
+                </label>
+                <input type="text" id="resultSearchInput" class="form-control" placeholder="Search predicted colleges..." onkeydown="if(event.key==='Enter'){doPredict();}">
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <label class="form-label section-label mb-0">
+                <span style="font-size:1rem;font-weight:700;">&#8377;</span>
+                ANNUAL BUDGET
+            </label>
+            <div class="budget-slider-wrap flex-1" style="min-width:220px;flex:1;">
+                <input type="range" id="budgetSlider" min="50000" max="500000" step="10000" value="500000"
+                    class="budget-slider w-100" oninput="onBudgetSlide(this.value)">
+                <div style="position:relative;height:18px;margin-top:4px;">
+                    <span style="position:absolute;left:0%;font-size:.7rem;color:#bbb;">&#8377;50K</span>
+                    <span style="position:absolute;left:11.1%;transform:translateX(-50%);font-size:.7rem;color:#bbb;">&#8377;1L</span>
+                    <span style="position:absolute;left:33.3%;transform:translateX(-50%);font-size:.7rem;color:#bbb;">&#8377;2L</span>
+                    <span style="position:absolute;left:55.6%;transform:translateX(-50%);font-size:.7rem;color:#bbb;">&#8377;3L</span>
+                    <span style="position:absolute;right:0%;font-size:.7rem;color:#bbb;">&#8377;5L</span>
+                </div>
+            </div>
+            <div class="budget-display" id="budgetDisplay">
+                <span class="budget-amount" id="budgetAmount">No Limit</span>
+                <span class="budget-sub">per year</span>
+            </div>
+            <div class="d-flex gap-2 align-items-center">
+                <button id="budgetClearBtn" class="pill-btn" onclick="clearBudget()" style="font-size:.78rem;padding:4px 12px;">No Limit</button>
+            </div>
+        </div>
+        <!-- Live cost preview -->
+        <div id="costPreview" class="cost-preview d-none mt-3">
+            <div class="cost-preview-grid">
+                <div class="cp-item">
+                    <span class="cp-label">Your Budget</span>
+                    <strong class="cp-val" id="cpBudget">—</strong>
+                    <small>per year</small>
+                </div>
+                <div class="cp-item cp-divider">
+                    <span class="cp-label">4-Year Total</span>
+                    <strong class="cp-val" id="cpTotal">—</strong>
+                    <small>approx.</small>
+                </div>
+                <div class="cp-item">
+                    <span class="cp-label">With Hostel</span>
+                    <strong class="cp-val" id="cpHostel">—</strong>
+                    <small>estimate (+₹60K/yr)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     EMPTY STATE (before search)
+     ═══════════════════════════════════════════════════ -->
+<div id="emptyState" class="content-card text-center py-5">
+    <div class="mb-3 mx-auto" style="width:70px;height:70px;background:rgba(0,105,92,.08);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--primary-green)" viewBox="0 0 16 16"><path d="M0 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2zm4-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-5zm4-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-8zm4-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v11a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-11z"/></svg>
+    </div>
+    <h4 class="fw-bold">Ready to find your college?</h4>
+    <p class="text-muted">Enter your marks and hit <strong>Find My Colleges</strong> to see instant results.</p>
+    <div class="d-flex justify-content-center gap-4 mt-3 flex-wrap">
+        <div class="mini-feature"><span class="mini-icon">📊</span><strong>Real TNEA Data</strong><small>2024 cutoff records</small></div>
+        <div class="mini-feature"><span class="mini-icon">🎯</span><strong>Probability Score</strong><small>Admission chance %</small></div>
+        <div class="mini-feature"><span class="mini-icon">🗺️</span><strong>All TN Districts</strong><small>243 colleges mapped</small></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     RESULTS AREA (populated by JS)
+     ═══════════════════════════════════════════════════ -->
+<div id="resultsArea" class="d-none">
+    <!-- Summary Bar -->
+    <div class="summary-bar mb-3" id="summaryBar"></div>
+
+    <!-- Sort Pills -->
+    <div class="d-flex align-items-center gap-2 flex-wrap mb-3" id="sortPillsRow">
+        <span class="text-muted small fw-semibold me-1">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M3 2a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v.5H3V2zm0 1.5h10v1H3v-1zM1 5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5z"/></svg>
+            Sort by:
+        </span>
+        <button class="sort-pill active" data-sort="best_match">Best Match</button>
+        <button class="sort-pill" data-sort="cutoff_high">Cutoff: High → Low</button>
+        <button class="sort-pill" data-sort="cutoff_low">Cutoff: Low → High</button>
+        <button class="sort-pill" data-sort="fees_low">Fees: Low → High</button>
+        <button class="sort-pill" data-sort="fees_high">Fees: High → Low</button>
+    </div>
+
+    <!-- Chance Legend -->
+    <div class="d-flex gap-3 mb-4 flex-wrap">
+        <span class="chance-legend"><span class="dot dot-high"></span> High Chance</span>
+        <span class="chance-legend"><span class="dot dot-moderate"></span> Moderate Chance</span>
+        <span class="chance-legend"><span class="dot dot-low"></span> Low Chance</span>
+        <span class="ms-auto text-muted small" id="rangeLabel"></span>
+    </div>
+
+    <!-- College Cards Container -->
+    <div id="collegeCards"></div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4 mb-5" id="paginationArea"></div>
+</div>
+
+<!-- Loading Spinner -->
+<div id="loadingOverlay" class="d-none">
+    <div class="spinner-border text-success" role="status"></div>
+    <span class="ms-2 fw-medium">Finding your best colleges…</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     COLLEGE DETAILS MODAL
+     ═══════════════════════════════════════════════════ -->
+<div id="detailsBackdrop" class="details-backdrop d-none" onclick="closeDetails()"></div>
+<div id="detailsPanel" class="details-panel d-none">
+    <div class="dp-header">
+        <div>
+            <h4 class="dp-title" id="dpTitle">College Name</h4>
+            <p class="dp-subtitle" id="dpSubtitle">Location · Type</p>
+        </div>
+        <button class="dp-close" onclick="closeDetails()">✕</button>
+    </div>
+    <div class="dp-body" id="dpBody">
+        <div class="text-center py-5">
+            <div class="spinner-border text-success" role="status"></div>
+            <p class="mt-2 text-muted">Loading college details…</p>
+        </div>
+    </div>
+</div>
+
+<!-- Floating Compare Bar -->
+<div id="compareBar" class="compare-bar d-none">
+    <div class="compare-bar-inner">
+        <div class="compare-bar-left">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4 4a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 1 0v-5A.5.5 0 0 0 4 6zm3-2a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 1 0v-7A.5.5 0 0 0 7 4zm3 3a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0v-4A.5.5 0 0 0 10 7z"/></svg>
+            <span id="compareBarCount">0</span> colleges selected
+            <span id="compareBarNames" class="compare-bar-names"></span>
+        </div>
+        <div class="compare-bar-right">
+            <button class="btn btn-sm" onclick="clearCompareList()" style="color:#fff;opacity:.7;">Clear</button>
+            <button class="btn btn-sm btn-light fw-bold" id="goCompareBtn" onclick="goCompare()" disabled>Compare Now →</button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     STYLES
+     ═══════════════════════════════════════════════════ -->
 <style>
-    /* Custom Styles for Predict Page */
-    .form-label {
-        font-weight: 600;
-        color: #444;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-    }
+/* Stat Pills (hero) */
+.stat-pill { text-align:center; }
+.stat-pill strong { display:block; font-size:1.5rem; color:var(--primary-green); }
+.stat-pill span { font-size:.8rem; color:#888; }
 
-    /* Modern Table Styling */
-    .table-modern {
-        border-collapse: separate;
-        border-spacing: 0 8px; /* Vertical spacing between rows */
-    }
-    
-    .table-modern thead th {
-        border: none;
-        color: #888;
-        font-weight: 600;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        padding: 12px 16px;
-    }
-    
-    .table-modern tbody tr {
-        background-color: #fff;
-        transition: all 0.2s;
-    }
-    
-    .table-modern tbody tr:hover {
-        background-color: #f8f9fa;
-        transform: translateX(2px);
-    }
+/* Mark Input */
+.mark-input-wrap { position:relative; }
+.mark-input { font-size:1.6rem; font-weight:700; padding:14px 16px; border:2px solid #e0e0e0; border-radius:12px; transition:border-color .2s; }
+.mark-input:focus { border-color:var(--primary-green); box-shadow:0 0 0 3px rgba(0,105,92,.1); }
+.mark-hint { position:absolute; right:12px; top:16px; font-size:.75rem; color:var(--primary-green); font-weight:600; }
+.mark-bar { height:4px; background:#e8e8e8; border-radius:4px; margin-top:4px; overflow:hidden; }
+.mark-bar-fill { height:100%; background:var(--primary-green); border-radius:4px; width:0%; transition:width .3s; }
 
-    .table-modern tbody td {
-        padding: 16px;
-        vertical-align: middle;
-        border: none;
-    }
+/* Cutoff Card */
+.cutoff-display { background:var(--primary-gradient); color:#fff; border-radius:14px; padding:16px 20px; text-align:center; position:relative; }
+.cutoff-label { font-size:.7rem; text-transform:uppercase; letter-spacing:1px; opacity:.85; }
+.cutoff-value { font-size:2.4rem; font-weight:800; line-height:1.1; }
+.cutoff-sub { font-size:.72rem; opacity:.7; }
+.cutoff-breakdown { display:flex; justify-content:center; gap:12px; margin-top:8px; font-size:.75rem; }
+.cutoff-breakdown span { opacity:.8; }
+.cutoff-breakdown strong { opacity:1; margin-left:2px; }
 
-    /* Row Border Radius Effect */
-    .table-modern tbody tr td:first-child {
-        border-top-left-radius: 10px;
-        border-bottom-left-radius: 10px;
-        box-shadow: -1px 2px 4px rgba(0,0,0,0.02);
-    }
-    .table-modern tbody tr td:last-child {
-        border-top-right-radius: 10px;
-        border-bottom-right-radius: 10px;
-        box-shadow: 1px 2px 4px rgba(0,0,0,0.02);
-    }
+/* Section Label */
+.section-label { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--primary-green); display:flex; align-items:center; gap:4px; }
+
+/* Pill Buttons */
+.pill-group { display:flex; flex-wrap:wrap; gap:6px; }
+.pill-btn { border:1.5px solid #d0d0d0; background:#fff; color:#555; border-radius:20px; padding:5px 16px; font-size:.85rem; font-weight:600; cursor:pointer; transition:all .2s; }
+.pill-btn:hover { border-color:var(--primary-green); color:var(--primary-green); }
+.pill-btn.active { background:var(--primary-green); color:#fff; border-color:var(--primary-green); }
+
+/* Find Button */
+.find-btn { font-size:1.05rem; padding:14px 24px; display:flex; align-items:center; justify-content:center; gap:8px; border-radius:14px !important; }
+
+/* Summary Bar */
+.summary-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+.summary-card { background:var(--primary-gradient); color:#fff; border-radius:14px; padding:18px 20px; }
+.summary-card .sc-label { font-size:.68rem; text-transform:uppercase; letter-spacing:.8px; opacity:.75; display:flex; align-items:center; gap:6px; }
+.summary-card .sc-value { font-size:2rem; font-weight:800; line-height:1.2; }
+.summary-card .sc-sub { font-size:.85rem; opacity:.6; }
+
+/* Sort Pills */
+.sort-pill { border:1.5px solid #ccc; background:#fff; color:#555; border-radius:20px; padding:4px 14px; font-size:.8rem; font-weight:600; cursor:pointer; transition:all .15s; }
+.sort-pill:hover { border-color:var(--primary-green); color:var(--primary-green); }
+.sort-pill.active { background:var(--primary-green); color:#fff; border-color:var(--primary-green); }
+
+/* Chance Legend */
+.chance-legend { font-size:.82rem; font-weight:500; display:flex; align-items:center; gap:5px; }
+.dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+.dot-high { background:#16a34a; }
+.dot-moderate { background:#f59e0b; }
+.dot-low { background:#ef4444; }
+
+/* College Card */
+.college-card { background:#fff; border-radius:16px; padding:0; box-shadow:0 4px 16px rgba(0,0,0,.05); margin-bottom:16px; border-left:4px solid var(--primary-green); overflow:hidden; transition:box-shadow .2s,transform .2s; }
+.college-card:hover { box-shadow:0 8px 28px rgba(0,105,92,.12); transform:translateY(-2px); }
+
+.cc-header { padding:20px 24px 14px; display:flex; align-items:flex-start; gap:14px; }
+.cc-rank { min-width:42px; height:42px; background:rgba(0,105,92,.08); border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:.95rem; color:var(--primary-green); flex-shrink:0; }
+.cc-info { flex:1; }
+.cc-name { font-size:1.1rem; font-weight:700; color:var(--text-dark); margin:0; }
+.cc-meta { font-size:.82rem; color:#888; margin-top:2px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.cc-meta svg { width:12px; height:12px; }
+.cc-badge { padding:3px 12px; border-radius:12px; font-size:.75rem; font-weight:700; text-transform:capitalize; flex-shrink:0; }
+.cc-badge.high { background:rgba(22,163,74,.1); color:#16a34a; }
+.cc-badge.moderate { background:rgba(245,158,11,.1); color:#d97706; }
+.cc-badge.low { background:rgba(239,68,68,.1); color:#ef4444; }
+
+/* Branch Table */
+.cc-table { width:100%; border-collapse:collapse; }
+.cc-table thead th { background:#f8faf9; font-size:.72rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:#777; padding:10px 20px; border-top:1px solid #eee; }
+.cc-table tbody td { padding:10px 20px; font-size:.88rem; border-top:1px solid #f3f3f3; color:#444; }
+.cc-table tbody tr:hover { background:#f7faf9; }
+.cc-chance { font-weight:700; }
+.cc-chance.high { color:#16a34a; }
+.cc-chance.moderate { color:#d97706; }
+.cc-chance.low { color:#ef4444; }
+
+.cc-footer { padding:10px 24px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+.cc-fees { font-size:.85rem; color:#666; background:#f5f5f5; padding:4px 14px; border-radius:10px; }
+.cc-view-btn { font-size:.85rem; font-weight:600; color:var(--primary-green); text-decoration:none; display:flex; align-items:center; gap:4px; }
+.cc-view-btn:hover { text-decoration:underline; }
+
+/* Pagination */
+.page-btn { width:38px; height:38px; border:1.5px solid #ddd; background:#fff; border-radius:10px; font-weight:600; font-size:.85rem; cursor:pointer; transition:all .15s; color:#555; }
+.page-btn:hover { border-color:var(--primary-green); color:var(--primary-green); }
+.page-btn.active { background:var(--primary-green); color:#fff; border-color:var(--primary-green); }
+.page-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+/* Loading */
+#loadingOverlay { display:flex; align-items:center; justify-content:center; padding:60px; }
+#loadingOverlay.d-none { display:none !important; }
+
+/* Mini Features */
+.mini-feature { text-align:center; }
+.mini-icon { font-size:1.4rem; display:block; margin-bottom:4px; }
+.mini-feature strong { display:block; font-size:.9rem; }
+.mini-feature small { color:#888; font-size:.75rem; }
+
+/* ─── Details Panel (Slide-in) ─── */
+.details-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:1040; transition:opacity .3s; }
+.details-panel { position:fixed; top:0; right:0; bottom:0; width:520px; max-width:95vw; background:#fff; z-index:1050; box-shadow:-8px 0 40px rgba(0,0,0,.15); transform:translateX(100%); transition:transform .35s cubic-bezier(.4,0,.2,1); overflow-y:auto; display:flex; flex-direction:column; }
+.details-panel.open { transform:translateX(0); }
+.dp-header { padding:24px 28px 16px; border-bottom:1px solid #eee; display:flex; align-items:flex-start; justify-content:space-between; gap:12px; position:sticky; top:0; background:#fff; z-index:2; }
+.dp-title { font-size:1.2rem; font-weight:700; margin:0; color:var(--text-dark); }
+.dp-subtitle { font-size:.85rem; color:#888; margin:4px 0 0; }
+.dp-close { background:none; border:none; font-size:1.3rem; cursor:pointer; color:#999; padding:4px 8px; border-radius:8px; transition:background .15s; }
+.dp-close:hover { background:#f0f0f0; color:#333; }
+.dp-body { padding:20px 28px 32px; flex:1; }
+
+/* Detail Sections */
+.dp-section { margin-bottom:24px; }
+.dp-section-title { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--primary-green); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+.dp-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.dp-item { background:#f8faf9; border-radius:10px; padding:12px 16px; }
+.dp-item-label { font-size:.72rem; text-transform:uppercase; letter-spacing:.5px; color:#888; margin-bottom:2px; }
+.dp-item-value { font-size:1rem; font-weight:600; color:var(--text-dark); }
+.dp-item-value.green { color:var(--primary-green); }
+.dp-tags { display:flex; flex-wrap:wrap; gap:6px; }
+.dp-tag { background:rgba(0,105,92,.06); color:var(--primary-green); padding:4px 12px; border-radius:16px; font-size:.8rem; font-weight:500; }
+
+/* Budget Filter */
+.budget-slider { -webkit-appearance:none; appearance:none; height:6px; border-radius:6px; background:linear-gradient(to right, var(--primary-green) 0%, var(--primary-green) 100%, #e0e0e0 100%); outline:none; transition:background .15s; }
+.budget-slider::-webkit-slider-thumb { -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--primary-green); cursor:pointer; box-shadow:0 2px 8px rgba(0,105,92,.3); border:2px solid #fff; }
+.budget-slider::-moz-range-thumb { width:20px; height:20px; border-radius:50%; background:var(--primary-green); cursor:pointer; border:2px solid #fff; }
+.budget-display { text-align:center; min-width:110px; }
+.budget-amount { display:block; font-size:1.3rem; font-weight:800; color:var(--primary-green); line-height:1; }
+.budget-sub { font-size:.72rem; color:#999; }
+
+/* Cost Preview Bar */
+.cost-preview { background:linear-gradient(135deg,rgba(0,105,92,.06),rgba(0,105,92,.02)); border-radius:12px; padding:14px 20px; border:1px solid rgba(0,105,92,.12); }
+.cost-preview-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.cp-item { text-align:center; }
+.cp-label { display:block; font-size:.72rem; text-transform:uppercase; letter-spacing:.5px; color:#888; margin-bottom:2px; }
+.cp-val { display:block; font-size:1.15rem; font-weight:700; color:var(--text-dark); }
+.cp-val.green { color:#16a34a; }
+.cp-val.red { color:#ef4444; }
+.cp-item small { font-size:.7rem; color:#bbb; }
+.cp-divider { border-left:1px solid rgba(0,105,92,.15); border-right:1px solid rgba(0,105,92,.15); }
+
+/* Affordability Badge on card */
+.cc-afford { padding:2px 10px; border-radius:10px; font-size:.7rem; font-weight:700; }
+.cc-afford.within { background:rgba(22,163,74,.1); color:#16a34a; }
+.cc-afford.stretch { background:rgba(245,158,11,.1); color:#d97706; }
+.cc-afford.above { background:rgba(239,68,68,.1); color:#ef4444; }
+
+/* Compare Button on Card */
+.cc-compare-btn { display:flex; align-items:center; gap:4px; border:1.5px solid #d0d0d0; background:#fff; color:#666; border-radius:8px; padding:4px 12px; font-size:.78rem; font-weight:600; cursor:pointer; transition:all .15s; }
+.cc-compare-btn:hover { border-color:var(--primary-green); color:var(--primary-green); }
+.cc-compare-btn.active { background:var(--primary-green); color:#fff; border-color:var(--primary-green); }
+
+/* Floating Compare Bar */
+.compare-bar { position:fixed; bottom:0; left:0; right:0; z-index:1030; animation:slideUp .3s ease; }
+.compare-bar-inner { max-width:1200px; margin:0 auto; background:var(--primary-gradient); color:#fff; padding:14px 24px; border-radius:16px 16px 0 0; display:flex; align-items:center; justify-content:space-between; gap:12px; box-shadow:0 -4px 24px rgba(0,0,0,.2); }
+.compare-bar-left { display:flex; align-items:center; gap:10px; font-weight:600; font-size:.9rem; }
+.compare-bar-names { font-weight:400; font-size:.78rem; opacity:.8; max-width:400px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.compare-bar-right { display:flex; align-items:center; gap:8px; }
+@keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+
+/* Responsive */
+@media(max-width:768px) {
+    .summary-bar { grid-template-columns:1fr 1fr; }
+    .mark-input { font-size:1.2rem; padding:10px 12px; }
+    .cutoff-value { font-size:1.8rem; }
+    .cc-header { flex-wrap:wrap; }
+    .details-panel { width:100vw; }
+    .cost-preview-grid { grid-template-columns:1fr; }
+    .compare-bar-names { display:none; }
+}
 </style>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════ -->
+<script>
+// ─── State ───
+let currentPage = 1;
+let currentSort = 'best_match';
+let lastResult = null;
+let currentBudget = 0; // 0 = no limit
+let compareList = []; // colleges selected for comparison
+
+// ─── Budget Slider ───
+function fmtBudgetLabel(val) {
+    val = parseInt(val);
+    if (val >= 100000) return '\u20b9' + (val / 100000).toFixed(1) + 'L';
+    return '\u20b9' + (val / 1000).toFixed(0) + 'K';
+}
+
+function onBudgetSlide(val) {
+    val = parseInt(val);
+    if (val >= 490000) { // treat max as no limit
+        clearBudget();
+        return;
+    }
+    currentBudget = val;
+    document.getElementById('budgetAmount').textContent = fmtBudgetLabel(val);
+    document.getElementById('budgetClearBtn').classList.add('active');
+    updateSliderGradient(val);
+    updateCostPreview(val);
+}
+
+function clearBudget() {
+    currentBudget = 0;
+    document.getElementById('budgetSlider').value = 500000;
+    document.getElementById('budgetAmount').textContent = 'No Limit';
+    document.getElementById('budgetClearBtn').classList.remove('active');
+    document.getElementById('costPreview').classList.add('d-none');
+    updateSliderGradient(500000);
+}
+
+function updateSliderGradient(val) {
+    const min = 50000, max = 500000;
+    const pct = ((val - min) / (max - min)) * 100;
+    const el = document.getElementById('budgetSlider');
+    el.style.background = `linear-gradient(to right, var(--primary-green) 0%, var(--primary-green) ${pct}%, #e0e0e0 ${pct}%, #e0e0e0 100%)`;
+}
+
+function updateCostPreview(annualFee) {
+    const preview = document.getElementById('costPreview');
+    preview.classList.remove('d-none');
+    const fourYear = annualFee * 4;
+    const withHostel = (annualFee + 60000) * 4;
+    document.getElementById('cpBudget').textContent = fmtBudgetLabel(annualFee);
+    const cpTotal = document.getElementById('cpTotal');
+    cpTotal.textContent = fmtBudgetLabel(fourYear);
+    cpTotal.className = 'cp-val green';
+    document.getElementById('cpHostel').textContent = fmtBudgetLabel(withHostel);
+}
+
+// ─── Live Cutoff Calculation ───
+function updateCutoff() {
+    const m = parseFloat(document.getElementById('marksMaths').value) || 0;
+    const p = parseFloat(document.getElementById('marksPhysics').value) || 0;
+    const c = parseFloat(document.getElementById('marksChemistry').value) || 0;
+
+    // Clamp
+    const mc = Math.min(100, Math.max(0, m));
+    const pc = Math.min(100, Math.max(0, p));
+    const cc = Math.min(100, Math.max(0, c));
+
+    const cutoff = mc + (pc / 2) + (cc / 2);
+
+    document.getElementById('cutoffValue').textContent = cutoff.toFixed(2);
+    document.getElementById('bdM').textContent = mc;
+    document.getElementById('bdP').textContent = pc;
+    document.getElementById('bdC').textContent = cc;
+
+    // Hints
+    document.getElementById('hintMaths').textContent = mc > 0 ? mc + '/100' : '';
+    document.getElementById('hintPhysics').textContent = pc > 0 ? pc + '/100' : '';
+    document.getElementById('hintChemistry').textContent = cc > 0 ? cc + '/100' : '';
+
+    // Progress bars
+    document.getElementById('barMaths').style.width = mc + '%';
+    document.getElementById('barPhysics').style.width = pc + '%';
+    document.getElementById('barChemistry').style.width = cc + '%';
+}
+
+document.getElementById('marksMaths').addEventListener('input', updateCutoff);
+document.getElementById('marksPhysics').addEventListener('input', updateCutoff);
+document.getElementById('marksChemistry').addEventListener('input', updateCutoff);
+
+// ─── Category Pills ───
+document.querySelectorAll('#categoryPills .pill-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('#categoryPills .pill-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+    });
+});
+
+// ─── Sort Pills ───
+document.querySelectorAll('.sort-pill').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.sort-pill').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentSort = this.dataset.sort;
+        document.getElementById('sortSelect').value = currentSort;
+        currentPage = 1;
+        doPredict();
+    });
+});
+
+// Sync dropdown sort with pills
+document.getElementById('sortSelect').addEventListener('change', function() {
+    currentSort = this.value;
+    document.querySelectorAll('.sort-pill').forEach(b => {
+        b.classList.toggle('active', b.dataset.sort === currentSort);
+    });
+    currentPage = 1;
+    doPredict();
+});
+
+// ─── Format currency ───
+function fmtFee(val) {
+    if (!val && val !== 0) return '—';
+    if (val >= 100000) return '₹' + (val / 100000).toFixed(1) + 'L';
+    if (val >= 1000) return '₹' + (val / 1000).toFixed(0) + 'K';
+    return '₹' + val;
+}
+
+// ─── Main Predict ───
+async function doPredict(page) {
+    const m = parseFloat(document.getElementById('marksMaths').value);
+    const p = parseFloat(document.getElementById('marksPhysics').value);
+    const c = parseFloat(document.getElementById('marksChemistry').value);
+
+    if (isNaN(m) || isNaN(p) || isNaN(c) || m < 0 || p < 0 || c < 0) {
+        alert('Please enter valid marks for all three subjects (0-100).');
+        return;
+    }
+
+    const category = document.querySelector('#categoryPills .pill-btn.active')?.dataset.value || 'OC';
+    const district = document.getElementById('districtSelect').value;
+    const searchQuery = document.getElementById('resultSearchInput')?.value || '';
+    currentSort = document.getElementById('sortSelect').value;
+    const maxFee = currentBudget > 0 ? currentBudget : null;
+    if (page) currentPage = page;
+
+    // Show loading
+    document.getElementById('emptyState').classList.add('d-none');
+    document.getElementById('resultsArea').classList.add('d-none');
+    document.getElementById('loadingOverlay').classList.remove('d-none');
+    document.getElementById('findBtn').disabled = true;
+
+    try {
+        const resp = await fetch('/api/predict', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                maths: m, physics: p, chemistry: c,
+                category, district, sort_by: currentSort, page: currentPage,
+                max_fee: maxFee, search_query: searchQuery
+            })
+        });
+        const data = await resp.json();
+
+        if (!data.ok) {
+            alert(data.error || 'Prediction failed.');
+            document.getElementById('emptyState').classList.remove('d-none');
+            return;
+        }
+
+        lastResult = data;
+        renderResults(data);
+
+    } catch (e) {
+        alert('Network error. Please try again.');
+        document.getElementById('emptyState').classList.remove('d-none');
+    } finally {
+        document.getElementById('loadingOverlay').classList.add('d-none');
+        document.getElementById('findBtn').disabled = false;
+    }
+}
+
+// ─── Render Results ───
+function renderResults(data) {
+    document.getElementById('resultsArea').classList.remove('d-none');
+    document.getElementById('emptyState').classList.add('d-none');
+
+    // Summary bar
+    const sb = document.getElementById('summaryBar');
+    const startItem = (data.page - 1) * data.per_page + 1;
+    const endItem = Math.min(data.page * data.per_page, data.total);
+    sb.innerHTML = `
+        <div class="summary-card">
+            <div class="sc-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M0 11.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2zm4-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-5zm4-3a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-8z"/></svg> CUTOFF SCORE</div>
+            <div class="sc-value">${data.cutoff}<span class="sc-sub">/ 200</span></div>
+        </div>
+        <div class="summary-card">
+            <div class="sc-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/></svg> COLLEGES MATCHED</div>
+            <div class="sc-value">${data.total}</div>
+        </div>
+        <div class="summary-card">
+            <div class="sc-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/><path d="M2 13c0 1 1 1 1 1h10s1 0 1-1-1-4-6-4-6 3-6 4z"/></svg> CATEGORY</div>
+            <div class="sc-value">${data.category}</div>
+        </div>
+        <div class="summary-card">
+            <div class="sc-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 3.293l6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293l6-6z"/><path d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/></svg> PAGE</div>
+            <div class="sc-value">${data.page}<span class="sc-sub">/ ${data.total_pages}</span></div>
+        </div>
+    `;
+
+    // Range label
+    document.getElementById('rangeLabel').textContent = `${startItem}–${endItem} of ${data.total}`;
+
+    // College cards
+    const container = document.getElementById('collegeCards');
+    if (!data.colleges || data.colleges.length === 0) {
+        container.innerHTML = '<div class="content-card text-center py-5"><h5 class="text-muted">No colleges found matching your criteria.</h5><p class="text-muted">Try adjusting your marks, category, or district filter.</p></div>';
+        document.getElementById('paginationArea').innerHTML = '';
+        return;
+    }
+
+    let html = '';
+    for (const col of data.colleges) {
+        // Branch rows
+        let branchRows = '';
+        for (const br of col.branches) {
+            branchRows += `
+                <tr>
+                    <td style="font-weight:600;">${br.name.toUpperCase()}</td>
+                    <td>${br.min}</td>
+                    <td>${br.avg}</td>
+                    <td>${br.max}</td>
+                    <td class="cc-chance ${br.level}">${br.chance}%</td>
+                </tr>`;
+        }
+
+        const feeStr = (col.fee_min || col.fee_max)
+            ? fmtFee(col.fee_min) + ' \u2013 ' + fmtFee(col.fee_max) + ' /yr'
+            : 'Fees N/A';
+
+        // 4-year cost estimate
+        let fourYearStr = '';
+        let affordBadge = '';
+        if (col.fee_min) {
+            const est4yr = col.fee_min * 4;
+            fourYearStr = `<span class="cc-fees" style="background:#f0f5f4;">₹${(est4yr/100000).toFixed(1)}L for 4 yrs</span>`;
+            if (currentBudget > 0) {
+                if (col.fee_max && col.fee_max <= currentBudget) {
+                    affordBadge = '<span class="cc-afford within">✓ Within Budget</span>';
+                } else if (col.fee_min <= currentBudget) {
+                    affordBadge = '<span class="cc-afford stretch">△ Stretch</span>';
+                } else {
+                    affordBadge = '<span class="cc-afford above">✕ Above Budget</span>';
+                }
+            }
+        }
+        html += `
+        <div class="college-card">
+            <div class="cc-header">
+                <div class="cc-rank">#${col.rank}</div>
+                <div class="cc-info">
+                    <h5 class="cc-name">${col.name}</h5>
+                    <div class="cc-meta">
+                        <span><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg> ${col.district}</span>
+                        <span>· ${col.college_type}</span>
+                    </div>
+                </div>
+                <span class="cc-badge ${col.chance_level}">${col.chance_level.charAt(0).toUpperCase() + col.chance_level.slice(1)}</span>
+            </div>
+            <table class="cc-table">
+                <thead><tr><th>Branch</th><th>Min</th><th>Avg</th><th>Max</th><th>Chance</th></tr></thead>
+                <tbody>${branchRows}</tbody>
+            </table>
+            <div class="cc-footer">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="cc-fees">${feeStr}</span>
+                    ${fourYearStr}
+                    ${affordBadge}
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button class="cc-compare-btn ${compareList.includes(col.name) ? 'active' : ''}" onclick="toggleCompare('${col.name.replace(/'/g, "\\\\'")}')" title="Add to compare">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4 4a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 1 0v-5A.5.5 0 0 0 4 6zm3-2a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 1 0v-7A.5.5 0 0 0 7 4zm3 3a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0v-4A.5.5 0 0 0 10 7z"/></svg>
+                        ${compareList.includes(col.name) ? 'Added' : 'Compare'}
+                    </button>
+                    <a href="javascript:void(0)" class="cc-view-btn" onclick="viewCollege('${col.name.replace(/'/g, "\\\\'")}')" >View Details →</a>
+                </div>
+            </div>
+        </div>`;
+    }
+    container.innerHTML = html;
+
+    // Pagination
+    renderPagination(data.page, data.total_pages);
+
+    // Scroll to results
+    document.getElementById('summaryBar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── Pagination ───
+function renderPagination(current, total) {
+    const area = document.getElementById('paginationArea');
+    if (total <= 1) { area.innerHTML = ''; return; }
+
+    let html = `<button class="page-btn me-1" onclick="doPredict(${current-1})" ${current===1?'disabled':''}>‹</button>`;
+
+    let start = Math.max(1, current - 3);
+    let end = Math.min(total, current + 3);
+    if (start > 1) html += `<button class="page-btn me-1" onclick="doPredict(1)">1</button>`;
+    if (start > 2) html += `<span class="mx-1 text-muted">…</span>`;
+
+    for (let i = start; i <= end; i++) {
+        html += `<button class="page-btn me-1 ${i===current?'active':''}" onclick="doPredict(${i})">${i}</button>`;
+    }
+
+    if (end < total - 1) html += `<span class="mx-1 text-muted">…</span>`;
+    if (end < total) html += `<button class="page-btn me-1" onclick="doPredict(${total})">${total}</button>`;
+
+    html += `<button class="page-btn" onclick="doPredict(${current+1})" ${current===total?'disabled':''}>›</button>`;
+    area.innerHTML = html;
+}
+
+// ─── View College Details ───
+async function viewCollege(collegeName) {
+    const panel = document.getElementById('detailsPanel');
+    const backdrop = document.getElementById('detailsBackdrop');
+    const body = document.getElementById('dpBody');
+
+    // Set title immediately
+    document.getElementById('dpTitle').textContent = collegeName;
+    document.getElementById('dpSubtitle').textContent = 'Loading…';
+    body.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-success" role="status"></div><p class="mt-2 text-muted">Loading college details…</p></div>';
+
+    // Show panel with animation
+    panel.classList.remove('d-none');
+    backdrop.classList.remove('d-none');
+    requestAnimationFrame(() => { panel.classList.add('open'); });
+    document.body.style.overflow = 'hidden';
+
+    try {
+        const resp = await fetch('/api/college-details', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: collegeName })
+        });
+        const d = await resp.json();
+
+        if (!d.ok) {
+            body.innerHTML = '<p class="text-danger">Failed to load details.</p>';
+            return;
+        }
+
+        // Subtitle
+        const subtitle = [d.district || '', d.college_info?.college_type || '', d.college_info?.approval_or_affiliation || ''].filter(Boolean).join(' · ');
+        document.getElementById('dpSubtitle').textContent = subtitle || collegeName;
+
+        let html = '';
+
+        // ── College Info Section ──
+        const info = d.college_info || {};
+        html += `<div class="dp-section">
+            <div class="dp-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg> College Details</div>
+            <div class="dp-grid">`;
+        if (d.district) html += `<div class="dp-item"><div class="dp-item-label">Location</div><div class="dp-item-value">${d.district}</div></div>`;
+        if (info.college_type) html += `<div class="dp-item"><div class="dp-item-label">College Type</div><div class="dp-item-value">${info.college_type}</div></div>`;
+        if (info.approval_or_affiliation) html += `<div class="dp-item"><div class="dp-item-label">Affiliation</div><div class="dp-item-value">${info.approval_or_affiliation}</div></div>`;
+        if (info.official_website) html += `<div class="dp-item"><div class="dp-item-label">Website</div><div class="dp-item-value"><a href="${info.official_website}" target="_blank" style="color:var(--primary-green);">${info.official_website.replace(/https?:\/\//, '').slice(0,30)}…</a></div></div>`;
+        html += `</div></div>`;
+
+        // ── Fees Section ──
+        const fees = d.fees_details || {};
+        html += `<div class="dp-section">
+            <div class="dp-section-title"><span style="font-size:1rem;font-weight:700;line-height:1;">&#8377;</span> Fees Structure</div>
+            <div class="dp-grid">`;
+        if (fees.tuition_fee_annual_inr) html += `<div class="dp-item"><div class="dp-item-label">Tuition (Annual)</div><div class="dp-item-value green">&#8377;${Number(fees.tuition_fee_annual_inr).toLocaleString('en-IN')}</div></div>`;
+        if (d.fee_min != null) html += `<div class="dp-item"><div class="dp-item-label">Fee Range</div><div class="dp-item-value">&#8377;${Number(d.fee_min).toLocaleString('en-IN')} – &#8377;${Number(d.fee_max).toLocaleString('en-IN')}</div></div>`;
+        if (fees.overall_program_fee_inr) html += `<div class="dp-item"><div class="dp-item-label">Overall Program Fee</div><div class="dp-item-value">&#8377;${Number(fees.overall_program_fee_inr).toLocaleString('en-IN')}</div></div>`;
+        if (fees.hostel_fee_annual_inr) html += `<div class="dp-item"><div class="dp-item-label">Hostel (Annual)</div><div class="dp-item-value">&#8377;${Number(fees.hostel_fee_annual_inr).toLocaleString('en-IN')}</div></div>`;
+        html += `</div></div>`;
+
+        // ── Placements Section ──
+        const plc = d.placements || {};
+        html += `<div class="dp-section">
+            <div class="dp-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5z"/></svg> Placements</div>
+            <div class="dp-grid">`;
+        if (plc.placement_rate_percent) html += `<div class="dp-item"><div class="dp-item-label">Placement Rate</div><div class="dp-item-value green">${plc.placement_rate_percent}%</div></div>`;
+        if (plc.average_package_lpa) html += `<div class="dp-item"><div class="dp-item-label">Avg Package</div><div class="dp-item-value">₹${plc.average_package_lpa} LPA</div></div>`;
+        if (plc.highest_package_lpa) html += `<div class="dp-item"><div class="dp-item-label">Highest Package</div><div class="dp-item-value green">₹${plc.highest_package_lpa} LPA</div></div>`;
+        if (plc.summary) html += `<div class="dp-item" style="grid-column:1/-1;"><div class="dp-item-label">Summary</div><div class="dp-item-value" style="font-size:.85rem;font-weight:400;">${plc.summary}</div></div>`;
+        if (!plc.placement_rate_percent && !plc.average_package_lpa && !plc.summary) {
+            html += `<div class="dp-item" style="grid-column:1/-1;"><div class="dp-item-value" style="color:#888;font-weight:400;">Placement data not available for this college.</div></div>`;
+        }
+        html += `</div></div>`;
+
+        // ── Branches & Categories ──
+        if (d.branches_available && d.branches_available.length) {
+            html += `<div class="dp-section">
+                <div class="dp-section-title"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687z"/></svg> Branches Available</div>
+                <div class="dp-tags">${d.branches_available.map(b => '<span class="dp-tag">' + b + '</span>').join('')}</div>
+            </div>`;
+        }
+        if (d.categories_available && d.categories_available.length) {
+            html += `<div class="dp-section">
+                <div class="dp-section-title">Categories Available</div>
+                <div class="dp-tags">${d.categories_available.map(c => '<span class="dp-tag">' + c + '</span>').join('')}</div>
+            </div>`;
+        }
+
+        body.innerHTML = html;
+
+    } catch (e) {
+        body.innerHTML = '<p class="text-danger">Network error. Please try again.</p>';
+    }
+}
+
+function closeDetails() {
+    const panel = document.getElementById('detailsPanel');
+    const backdrop = document.getElementById('detailsBackdrop');
+    panel.classList.remove('open');
+    document.body.style.overflow = '';
+    setTimeout(() => {
+        panel.classList.add('d-none');
+        backdrop.classList.add('d-none');
+    }, 350);
+}
+
+// Close on Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeDetails();
+});
+
+// ─── Pro tip ───
+document.addEventListener('DOMContentLoaded', function() {
+    updateCutoff();
+
+    // Auto-fill from URL params (Search Again from History)
+    const params = new URLSearchParams(window.location.search);
+    const maths = params.get('maths');
+    const physics = params.get('physics');
+    const chemistry = params.get('chemistry');
+    const category = params.get('category');
+    const district = params.get('district');
+
+    if (maths || physics || chemistry) {
+        // Fill marks
+        if (maths)    document.getElementById('marksMaths').value    = maths;
+        if (physics)  document.getElementById('marksPhysics').value  = physics;
+        if (chemistry)document.getElementById('marksChemistry').value = chemistry;
+        updateCutoff();
+
+        // Set category pill
+        if (category) {
+            document.querySelectorAll('#categoryPills .pill-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.value === category);
+            });
+        }
+
+        // Set district dropdown
+        if (district) {
+            const sel = document.getElementById('districtSelect');
+            for (let opt of sel.options) {
+                if (opt.value.toLowerCase() === district.toLowerCase()) {
+                    sel.value = opt.value;
+                    break;
+                }
+            }
+        }
+
+        // Auto-trigger search after a short delay (let page render)
+        setTimeout(() => doPredict(), 400);
+
+        // Clean URL without reloading
+        window.history.replaceState({}, '', window.location.pathname);
+    }
+});
+
+// ─── Compare Functions ───
+function toggleCompare(collegeName) {
+    const idx = compareList.indexOf(collegeName);
+    if (idx >= 0) {
+        compareList.splice(idx, 1);
+    } else {
+        if (compareList.length >= 4) {
+            alert('You can compare up to 4 colleges. Remove one first.');
+            return;
+        }
+        compareList.push(collegeName);
+    }
+    updateCompareBar();
+    // Re-render to update button states
+    if (lastResult) renderResults(lastResult);
+}
+
+function updateCompareBar() {
+    const bar = document.getElementById('compareBar');
+    if (compareList.length > 0) {
+        bar.classList.remove('d-none');
+        document.getElementById('compareBarCount').textContent = compareList.length;
+        document.getElementById('compareBarNames').textContent = compareList.map(n => n.split(' - ')[0].substring(0, 25)).join(', ');
+        document.getElementById('goCompareBtn').disabled = compareList.length < 2;
+    } else {
+        bar.classList.add('d-none');
+    }
+}
+
+function clearCompareList() {
+    compareList = [];
+    updateCompareBar();
+    if (lastResult) renderResults(lastResult);
+}
+
+function goCompare() {
+    if (compareList.length < 2) return;
+    const params = compareList.map((c, i) => 'c' + (i+1) + '=' + encodeURIComponent(c)).join('&');
+    window.location.href = '/compare?' + params;
+}
+</script>
+
+<p class="text-center text-muted small mt-4 mb-5">
+    <strong>Pro tip:</strong> Select your exact category (OC/BC/MBC/SC/ST) for more accurate results.
+</p>
 
 {% endblock %}

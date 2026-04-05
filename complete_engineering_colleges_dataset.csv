@@ -16,7 +16,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 142.0,135.0,7921,Mechanical,SC,Trichy,No,Pavendar Bharathidasan College - Mathur,177000.0
 155.0,153.0,5089,Biotech,OC,Tirunelveli,No,Einstein College of Engineering - Seethaparpanallur,169000.0
 161.0,159.0,4529,Aerospace,BC,Tenkasi,No,Government College of Engineering - Tenkasi,59000.0
-155.0,155.0,6036,EEE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,181000.0
+155.0,155.0,6036,EEE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,181000.0
 130.0,130.0,10000,ECE,OC,Kancheepuram,No,G.K.M. College of Engineering - Chennai Road,211000.0
 142.0,134.0,8393,Civil,BC,Coimbatore,No,Park College of Technology - Karumathampatti,168000.0
 130.0,138.0,10000,EIE,SC,Tirunelveli,No,S.Vellaichamy Nadar College - Thatchanallur,155000.0
@@ -141,7 +141,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 139.0,146.0,8272,IT,MBC,Thoothukkudi,No,Dr. Sivanthi Aditanar College of Engineering - Thoothukkudi,180000.0
 154.0,148.0,6142,EIE,OC,Virudhunagar,Yes,P.S.R. Engineering College - Sivakasi,145000.0
 145.0,146.0,7625,Chemical,BC,Krishnagiri,No,T.J.S. Engineering College - Hosur,155000.0
-158.0,162.0,5525,CSE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,211000.0
+158.0,162.0,5525,CSE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,211000.0
 155.0,160.0,5484,CSE,OC,Namakkal,No,K.S.R. College of Engineering - Tiruchengode,182000.0
 132.0,137.0,9050,EIE,ST,Salem,No,Shree Venkateshwara College - Gobi,182000.0
 130.0,134.0,10000,Chemical,OC,Vellore,No,Kingston Engineering College - Katpadi,197000.0
@@ -249,7 +249,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 132.0,136.0,10000,Aerospace,BC,Ranipet,No,Ranipet Engineering College - Ranipet,178000.0
 152.0,154.0,5973,EEE,BC,Erode,No,Surya Engineering College - Mettur Dam,168000.0
 152.0,158.0,5527,Mechanical,BC,Coimbatore,No,RVS College of Engineering - Sulur,189000.0
-130.0,130.0,9507,EEE,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,190000.0
+130.0,130.0,9507,EEE,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,190000.0
 137.0,140.0,8654,Chemical,ST,Villupuram,Yes,V.R.S. College of Engineering - Villupuram,155000.0
 162.0,167.0,3870,Aerospace,MBC,Ranipet,No,Vels Institute of Technology - Ranipet,170000.0
 133.0,134.0,9461,Mechanical,SC,Dharmapuri,No,Dharmapuri College of Engineering - Palacode,140000.0
@@ -348,7 +348,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 146.0,145.0,6909,EEE,OC,Namakkal,No,N.P.R. College of Engineering - Namakkal,156000.0
 130.0,132.0,9536,Aerospace,SC,Thoothukkudi,No,Thoothukkudi Engineering College - Thoothukkudi,177000.0
 141.0,149.0,7617,ECE,BC,Salem,No,Sona College of Technology - Suramangalam,172000.0
-142.0,143.0,7414,Biotech,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,168000.0
+142.0,143.0,7414,Biotech,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,168000.0
 164.0,172.0,3710,Chemical,ST,Thiruvallur,No,Sri Muthukumaran Institute of Technology - Mangadu,167000.0
 147.0,155.0,7464,Civil,BC,Perambalur,No,Srinivasan Engineering College - Perambalur,148000.0
 163.0,166.0,4332,IT,OC,Ranipet,No,C. Abdul Hakeem College of Engineering - Ranipet,178000.0
@@ -863,7 +863,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 154.0,147.0,6216,ECE,OC,Vellore,No,Global Institute of Engineering - Thiruppathur,213000.0
 137.0,141.0,9271,ECE,BC,Krishnagiri,No,Anna University Regional Campus - Krishnagiri,178000.0
 147.0,144.0,6828,Biotech,MBC,Krishnagiri,No,Sri Krishna College of Technology - Hosur,142000.0
-138.0,132.0,8553,Civil,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,173000.0
+138.0,132.0,8553,Civil,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,173000.0
 138.0,145.0,8642,Chemical,BC,Villupuram,No,Sri Manakula Vinayagar Engineering - Madagadipet,137000.0
 130.0,138.0,10000,EIE,OC,Kancheepuram,No,Apollo Engineering College - Mevalurkuppam,184000.0
 136.0,134.0,9209,EIE,SC,Theni,Yes,V.P.N. College of Engineering - Theni,154000.0
@@ -1025,7 +1025,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 156.0,152.0,4788,Aerospace,BC,Pudukkottai,No,Shanmuganathan Engineering College - Pudukkottai,181000.0
 136.0,137.0,9231,Civil,BC,Theni,No,Jayam College of Engineering - Theni,146000.0
 141.0,136.0,7573,IT,ST,Ranipet,No,C. Abdul Hakeem College of Engineering - Ranipet,181000.0
-146.0,140.0,7259,Chemical,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,170000.0
+146.0,140.0,7259,Chemical,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,170000.0
 142.0,141.0,7569,CSE,MBC,Thoothukkudi,No,National College of Engineering - Thoothukkudi,169000.0
 149.0,151.0,6606,CSE,SC,Madurai,No,Velammal College of Engineering - Ambai Road,198000.0
 178.0,174.0,1541,CSE,MBC,Chennai,No,SRM Institute of Science and Technology - Kattankulathur,389000.0
@@ -2165,7 +2165,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 146.0,146.0,7673,Biotech,OC,Chennai,No,Jeppiaar Engineering College - Semmancheri,202000.0
 153.0,160.0,6029,ECE,SC,Virudhunagar,No,S.Vellaichamy Nadar College - Virudhunagar,165000.0
 153.0,148.0,6164,Civil,OC,Ranipet,No,S.R.M. University - Ranipet,140000.0
-130.0,130.0,9559,Civil,ST,Trichy,No,National Institute of Technology Trichy - Thuvakudi,161000.0
+130.0,130.0,9559,Civil,ST,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,161000.0
 132.0,136.0,9834,Biotech,BC,Tenkasi,No,Ponjesly College of Engineering - Tenkasi,156000.0
 156.0,164.0,4748,Chemical,MBC,Dharmapuri,No,M.K. University College - Dharmapuri,140000.0
 141.0,136.0,7474,ECE,OC,Cuddalore,No,Bharathidasan Engineering College - Nallur,153000.0
@@ -2204,7 +2204,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 161.0,162.0,4146,Chemical,OC,Thoothukkudi,Yes,Rani Anna Government College - Thoothukkudi,53000.0
 157.0,162.0,5734,CSE,BC,Tirunelveli,No,S.Vellaichamy Nadar College - Thatchanallur,175000.0
 156.0,155.0,5257,Mechanical,ST,Coimbatore,No,Dr. Mahalingam College of Engineering - Pollachi,203000.0
-138.0,134.0,8025,Civil,ST,Trichy,Yes,National Institute of Technology Trichy - Thuvakudi,165000.0
+138.0,134.0,8025,Civil,ST,Trichy,Yes,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,165000.0
 140.0,141.0,7779,Civil,OC,Theni,Yes,Theni Engineering College - Theni,143000.0
 133.0,139.0,9925,Biotech,BC,Salem,No,Aruna College of Engineering - Thiruchengode,167000.0
 152.0,147.0,6637,EEE,SC,Chennai,No,St. Joseph's College of Engineering - OMR,216000.0
@@ -3514,7 +3514,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 152.0,148.0,6127,EEE,MBC,Kanyakumari,No,Bethlahem Institute of Engineering - Karungal,174000.0
 147.0,141.0,7432,EIE,OC,Chengalpattu,No,T.J.S. Engineering College - Peruvoyal,191000.0
 151.0,157.0,5960,EEE,ST,Kancheepuram,No,G.K.M. College of Engineering - Chennai Road,194000.0
-138.0,130.0,8986,Mechanical,SC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,182000.0
+138.0,130.0,8986,Mechanical,SC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,182000.0
 167.0,172.0,3470,EIE,OC,Thanjavur,No,Rajah Serfoji Government College - Thanjavur,60000.0
 152.0,148.0,6022,EIE,MBC,Namakkal,No,Vivekanandha College of Engineering - Tiruchengode,158000.0
 150.0,152.0,6213,CSE,OC,Namakkal,No,Selvam College of Technology - Namakkal,162000.0
@@ -4242,7 +4242,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 142.0,144.0,7914,Aerospace,SC,Virudhunagar,Yes,Ramco Institute of Technology - Rajapalayam,179000.0
 152.0,149.0,6217,EIE,SC,Salem,No,Muthayammal Engineering College - Rasipuram,182000.0
 163.0,155.0,4189,EIE,OC,Tenkasi,No,S.V. College of Engineering - Tenkasi,160000.0
-136.0,132.0,9142,Chemical,SC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,159000.0
+136.0,132.0,9142,Chemical,SC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,159000.0
 154.0,162.0,5915,Chemical,BC,Krishnagiri,No,T.J.S. Engineering College - Hosur,152000.0
 130.0,133.0,10000,Biotech,ST,Namakkal,No,Selvam College of Technology - Namakkal,159000.0
 156.0,148.0,4762,EEE,SC,Theni,No,V.P.N. College of Engineering - Theni,156000.0
@@ -5774,7 +5774,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 158.0,159.0,4568,Biotech,BC,Erode,No,Kongu Arts and Science College - Nanjanapuram,225000.0
 155.0,156.0,4997,EIE,OC,Thanjavur,No,Arasu Engineering College - Kumbakonam,152000.0
 147.0,147.0,7114,CSE,OC,Erode,No,Angel College of Engineering - Gobichettipalayam,200000.0
-132.0,130.0,9659,Mechanical,MBC,Trichy,Yes,National Institute of Technology Trichy - Thuvakudi,186000.0
+132.0,130.0,9659,Mechanical,MBC,Trichy,Yes,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,186000.0
 152.0,154.0,5902,Aerospace,ST,Cuddalore,No,Christ College of Engineering - Puducherry,171000.0
 163.0,170.0,4513,IT,MBC,Thoothukkudi,No,Rani Anna Government College - Thoothukkudi,65000.0
 156.0,152.0,5465,EIE,BC,Salem,No,The Kavery Engineering College - Mecheri,164000.0
@@ -5811,7 +5811,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 145.0,152.0,7759,EEE,ST,Thiruvarur,Yes,Thiruvarur Engineering College - Thiruvarur,166000.0
 130.0,130.0,9750,Aerospace,BC,Ranipet,No,Ranipet Engineering College - Ranipet,156000.0
 135.0,130.0,8627,EIE,BC,Coimbatore,No,Nehru Institute of Engineering - T.M. Palayam,197000.0
-163.0,164.0,3655,IT,SC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,183000.0
+163.0,164.0,3655,IT,SC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,183000.0
 143.0,141.0,7200,EIE,OC,Salem,No,Muthayammal Engineering College - Rasipuram,167000.0
 149.0,142.0,6158,Biotech,OC,Karur,No,V.S.B. Engineering College - Karur,152000.0
 158.0,151.0,5305,CSE,OC,Thoothukkudi,No,Rani Anna Government College - Thoothukkudi,61000.0
@@ -6238,7 +6238,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 163.0,169.0,4047,Mechanical,OC,Tenkasi,No,Government College of Engineering - Tenkasi,50000.0
 141.0,147.0,7474,CSE,BC,Namakkal,No,Vivekanandha College of Engineering - Tiruchengode,169000.0
 133.0,135.0,9421,Chemical,BC,Ramanathapuram,No,Sethu Institute of Technology - Ramanathapuram,141000.0
-156.0,161.0,5118,ECE,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,191000.0
+156.0,161.0,5118,ECE,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,191000.0
 143.0,146.0,7735,IT,OC,Thanjavur,No,Indra Ganesan College of Engineering - Manjakollai,181000.0
 131.0,130.0,9311,Aerospace,OC,Kanyakumari,No,Arunachala College of Engineering - Vellichanthai,175000.0
 133.0,132.0,9868,CSE,BC,Kancheepuram,Yes,Madha Engineering College - Kundrathur,195000.0
@@ -6868,7 +6868,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 141.0,135.0,7639,ECE,SC,Karur,No,Karur College of Engineering - Karur,168000.0
 145.0,139.0,7330,Civil,SC,Karur,Yes,V.S.B. Engineering College - Karur,139000.0
 157.0,152.0,5441,Civil,ST,Dharmapuri,No,P.G.P. College of Engineering - Namakkal,142000.0
-151.0,146.0,5760,EEE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,190000.0
+151.0,146.0,5760,EEE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,190000.0
 142.0,134.0,8311,CSE,ST,Thoothukkudi,No,Infant Jesus College of Engineering - Thoothukkudi,180000.0
 130.0,130.0,9944,Aerospace,OC,Krishnagiri,No,T.J.S. Engineering College - Hosur,177000.0
 162.0,154.0,4322,CSE,BC,Dharmapuri,No,Government College of Engineering - Dharmapuri,59000.0
@@ -7728,7 +7728,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 160.0,162.0,5094,Biotech,SC,Erode,No,Velaivani College of Engineering - Thindal,168000.0
 158.0,155.0,5408,CSE,SC,Madurai,No,Nadar Saraswathi College of Engineering - Theni Road,223000.0
 130.0,136.0,9823,Biotech,OC,Thanjavur,Yes,Shanmuganathan Engineering College - Pudukkottai Road,151000.0
-138.0,135.0,8539,EEE,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,179000.0
+138.0,135.0,8539,EEE,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,179000.0
 130.0,130.0,9874,Civil,BC,Pudukkottai,No,M.A.M. College of Engineering - Pudukkottai,129000.0
 152.0,155.0,6148,ECE,MBC,Madurai,No,SACS Engineering College - Kilakuha,206000.0
 135.0,132.0,9521,IT,MBC,Villupuram,No,Mailam Engineering College - Mailam,174000.0
@@ -8191,7 +8191,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 148.0,145.0,6867,Aerospace,ST,Chengalpattu,No,Jeppiaar Institute of Technology - Sriperumbudur,221000.0
 139.0,134.0,7894,EIE,SC,Trichy,No,M.I.E.T. Engineering College - Gundur,171000.0
 140.0,147.0,7973,Aerospace,OC,Tenkasi,No,Tenkasi Engineering College - Tenkasi,165000.0
-130.0,131.0,10000,EEE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,182000.0
+130.0,131.0,10000,EEE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,182000.0
 139.0,144.0,8173,Aerospace,BC,Krishnagiri,Yes,Hosur Institute of Technology - Hosur,163000.0
 154.0,148.0,6219,Chemical,BC,Vellore,No,Global Institute of Engineering - Thiruppathur,173000.0
 145.0,137.0,7089,Biotech,OC,Kanyakumari,No,Narayanaguru College of Engineering - Manjalumoodu,151000.0
@@ -8333,7 +8333,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 149.0,155.0,6263,Chemical,ST,Thiruvarur,No,Thiruvarur Engineering College - Thiruvarur,154000.0
 130.0,130.0,10000,Aerospace,BC,Nagapattinam,No,M.R.K. College of Engineering - Nagapattinam,155000.0
 143.0,136.0,7148,Aerospace,OC,Madurai,No,P.T.R. College of Engineering - Austinpatti,185000.0
-162.0,154.0,4654,EEE,ST,Trichy,No,National Institute of Technology Trichy - Thuvakudi,191000.0
+162.0,154.0,4654,EEE,ST,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,191000.0
 148.0,149.0,6658,ECE,OC,Thiruvallur,Yes,Gojan School of Business and Technology - Redhills,192000.0
 147.0,154.0,6435,Civil,SC,Nagapattinam,No,A.V.C. College of Engineering - Nagapattinam,150000.0
 149.0,154.0,6479,ECE,OC,Vellore,No,Sakthi Engineering College - Thiruvalam,212000.0
@@ -8466,7 +8466,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 144.0,141.0,6928,ECE,MBC,Theni,No,Sree Sowdambika College of Engineering - Theni,170000.0
 165.0,164.0,3825,Chemical,BC,Salem,No,The Kavery Engineering College - Mecheri,173000.0
 157.0,153.0,5416,ECE,ST,Tenkasi,No,Tenkasi Engineering College - Tenkasi,157000.0
-159.0,159.0,4556,ECE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,194000.0
+159.0,159.0,4556,ECE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,194000.0
 137.0,130.0,9261,Mechanical,MBC,Sivagangai,No,Sudharsan Engineering College - Sivagangai,141000.0
 132.0,130.0,9687,Aerospace,OC,Perambalur,No,Perambalur College of Engineering - Perambalur,167000.0
 139.0,138.0,7892,EIE,ST,Tirunelveli,No,Einstein College of Engineering - Seethaparpanallur,161000.0
@@ -9414,7 +9414,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 130.0,130.0,10000,EEE,ST,Sivagangai,Yes,Sivagangai Engineering College - Sivagangai,172000.0
 130.0,134.0,9589,Chemical,ST,Tenkasi,No,Ponjesly College of Engineering - Tenkasi,142000.0
 148.0,154.0,6659,EEE,OC,Sivagangai,No,Sivagangai Engineering College - Sivagangai,153000.0
-138.0,131.0,8788,CSE,OC,Trichy,Yes,National Institute of Technology Trichy - Thuvakudi,199000.0
+138.0,131.0,8788,CSE,OC,Trichy,Yes,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,199000.0
 130.0,130.0,9876,ECE,SC,Vellore,No,Aaa College of Engineering - Arakkonam,206000.0
 144.0,137.0,8016,Chemical,ST,Nagapattinam,No,E.G.S. Pillay Engineering College - Nagapattinam,157000.0
 141.0,142.0,8449,Aerospace,BC,Kancheepuram,No,Sri Ramanujar Engineering College - Kolathur,199000.0
@@ -9609,7 +9609,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 138.0,141.0,8492,IT,MBC,Ranipet,No,Vels Institute of Technology - Ranipet,178000.0
 155.0,162.0,5970,Aerospace,BC,Vellore,No,Pallavan College of Engineering - Kanchipuram,214000.0
 138.0,142.0,8572,Chemical,MBC,Tirunelveli,No,Jayamatha Engineering College - Aralvaimozhi,162000.0
-130.0,130.0,10000,EIE,SC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,187000.0
+130.0,130.0,10000,EIE,SC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,187000.0
 130.0,130.0,9894,Chemical,OC,Erode,No,Akshaya College of Engineering - Coimbatore Road,168000.0
 149.0,151.0,6901,Mechanical,MBC,Madurai,No,Raja College of Engineering - Usilampatti,187000.0
 152.0,149.0,5912,Aerospace,MBC,Theni,Yes,Jayam College of Engineering - Theni,174000.0
@@ -9707,7 +9707,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 137.0,136.0,9291,Civil,BC,Krishnagiri,No,Alpha College of Engineering - Hosur,150000.0
 143.0,145.0,7707,Biotech,SC,Chengalpattu,No,St. Joseph's Institute of Technology - OMR,180000.0
 132.0,133.0,9721,CSE,MBC,Thanjavur,No,A.V.C. College of Engineering - Mayiladuthurai,185000.0
-141.0,140.0,7705,Mechanical,ST,Trichy,No,National Institute of Technology Trichy - Thuvakudi,165000.0
+141.0,140.0,7705,Mechanical,ST,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,165000.0
 159.0,166.0,4230,ECE,OC,Ramanathapuram,No,Sethu Institute of Technology - Ramanathapuram,169000.0
 146.0,143.0,6609,Aerospace,BC,Kallakurichi,No,Anna University Regional Campus - Kallakurichi,163000.0
 133.0,130.0,9533,CSE,OC,Chengalpattu,No,Dhanalakshmi College of Engineering - Tambaram,225000.0
@@ -9808,7 +9808,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 137.0,130.0,8983,IT,MBC,Nagapattinam,No,E.G.S. Pillay Engineering College - Nagapattinam,171000.0
 148.0,145.0,6662,Aerospace,MBC,Coimbatore,No,Kumaraguru College of Technology - Chinnavedampatti,224000.0
 141.0,133.0,7759,Aerospace,BC,Ramanathapuram,No,Mohamed Sathak Engineering College - Ramanathapuram,165000.0
-130.0,130.0,10000,EIE,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,177000.0
+130.0,130.0,10000,EIE,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,177000.0
 130.0,133.0,9795,Chemical,ST,Sivagangai,No,Sivagangai Engineering College - Sivagangai,136000.0
 160.0,168.0,4515,ECE,MBC,Perambalur,No,Roever Engineering College - Perambalur,177000.0
 140.0,140.0,8521,Mechanical,SC,Coimbatore,No,RVS College of Engineering - Sulur,188000.0
@@ -10386,7 +10386,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 136.0,142.0,9000,Aerospace,OC,Thiruvarur,No,Thiruvarur Engineering College - Thiruvarur,171000.0
 152.0,154.0,6038,Chemical,OC,Salem,Yes,Mahendra Engineering College - Mallasamudram,169000.0
 161.0,159.0,4314,CSE,MBC,Thiruvallur,No,Alpha College of Engineering - Thirumazhisai,214000.0
-153.0,150.0,5881,ECE,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,194000.0
+153.0,150.0,5881,ECE,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,194000.0
 130.0,137.0,9622,ECE,ST,Vellore,Yes,Aishwarya College of Engineering - Gudiyatham,218000.0
 146.0,139.0,7090,EIE,SC,Perambalur,No,Perambalur College of Engineering - Perambalur,145000.0
 130.0,134.0,10000,EIE,BC,Tenkasi,Yes,Ponjesly College of Engineering - Tenkasi,146000.0
@@ -10418,7 +10418,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 134.0,132.0,8890,Mechanical,BC,Kancheepuram,No,Apollo Engineering College - Mevalurkuppam,189000.0
 134.0,130.0,9560,Biotech,SC,Trichy,No,Pavendar Bharathidasan College - Mathur,174000.0
 136.0,140.0,8468,EEE,BC,Thiruvallur,Yes,Alpha College of Engineering - Thirumazhisai,200000.0
-154.0,162.0,5896,CSE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,214000.0
+154.0,162.0,5896,CSE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,214000.0
 165.0,166.0,3274,ECE,BC,Coimbatore,No,Sree Narayana Guru College - K.G. Chavadi,216000.0
 147.0,149.0,6879,EIE,OC,Dindigul,No,Dindigul Engineering College - Dindigul,155000.0
 138.0,145.0,8710,CSE,OC,Nagapattinam,No,Nagapattinam Engineering College - Nagapattinam,178000.0
@@ -10608,7 +10608,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 169.0,168.0,3242,ECE,OC,Salem,No,Kongu Engineering College - Perundurai,268000.0
 160.0,155.0,4978,Chemical,SC,Karur,No,Chettinad College of Engineering - Karur,158000.0
 165.0,158.0,3963,Chemical,BC,Thanjavur,No,Arasu Engineering College - Kumbakonam,152000.0
-133.0,138.0,8937,EIE,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,172000.0
+133.0,138.0,8937,EIE,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,172000.0
 162.0,160.0,4572,ECE,BC,Sivagangai,No,Alagappa Chettiar College of Engineering - Karaikudi,154000.0
 152.0,146.0,5494,Aerospace,MBC,Karur,No,V.S.B. Engineering College - Karur,179000.0
 131.0,130.0,9845,Biotech,BC,Kallakurichi,No,Anna University Regional Campus - Kallakurichi,143000.0
@@ -10911,7 +10911,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 151.0,148.0,5629,EEE,BC,Vellore,No,Kingston Engineering College - Katpadi,188000.0
 155.0,160.0,5578,Biotech,MBC,Pudukkottai,No,Shanmuganathan Engineering College - Pudukkottai,162000.0
 157.0,154.0,5155,Civil,OC,Nagapattinam,No,E.G.S. Pillay Engineering College - Nagapattinam,146000.0
-158.0,151.0,5394,ECE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,176000.0
+158.0,151.0,5394,ECE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,176000.0
 136.0,132.0,9347,Civil,OC,Karur,No,Sengunthar Engineering College - Karur,145000.0
 170.0,168.0,2682,Mechanical,OC,Thoothukkudi,Yes,Rani Anna Government College - Thoothukkudi,51000.0
 130.0,130.0,9402,Civil,SC,Theni,No,Jayam College of Engineering - Theni,147000.0
@@ -11977,7 +11977,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 146.0,138.0,6720,CSE,MBC,Cuddalore,No,Christ College of Engineering - Puducherry,163000.0
 163.0,160.0,3841,IT,SC,Tirunelveli,No,Government College of Engineering Tirunelveli - Vannarpettai,68000.0
 144.0,145.0,7357,Chemical,BC,Ramanathapuram,No,Kamaraj College of Engineering - Ramanathapuram,138000.0
-140.0,132.0,8207,Mechanical,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,174000.0
+140.0,132.0,8207,Mechanical,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,174000.0
 142.0,147.0,7347,CSE,SC,Kallakurichi,No,Kallakurichi Engineering College - Kallakurichi,163000.0
 145.0,138.0,7675,EIE,SC,Namakkal,No,K.S.R. College of Engineering - Tiruchengode,169000.0
 130.0,130.0,10000,Civil,MBC,Tenkasi,No,Tenkasi Engineering College - Tenkasi,146000.0
@@ -12037,7 +12037,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 153.0,150.0,6294,Biotech,SC,Madurai,No,Vickram College of Engineering - Enathi,195000.0
 146.0,149.0,7708,Biotech,MBC,Thoothukkudi,No,National College of Engineering - Thoothukkudi,166000.0
 151.0,158.0,5721,Mechanical,SC,Tenkasi,No,S.V. College of Engineering - Tenkasi,150000.0
-144.0,150.0,8004,EEE,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,198000.0
+144.0,150.0,8004,EEE,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,198000.0
 160.0,153.0,4792,CSE,MBC,Thoothukkudi,No,Rani Anna Government College - Thoothukkudi,65000.0
 136.0,130.0,8719,Chemical,SC,Karur,No,Sengunthar Engineering College - Karur,144000.0
 131.0,130.0,9359,EEE,BC,Theni,No,Sree Sowdambika College of Engineering - Theni,162000.0
@@ -12388,7 +12388,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 139.0,136.0,8184,Mechanical,OC,Dharmapuri,No,P.G.P. College of Engineering - Namakkal,154000.0
 166.0,166.0,3143,Civil,BC,Tirunelveli,No,Rani Anna Government College - Alwarkurichi,49000.0
 134.0,138.0,9652,Aerospace,OC,Dharmapuri,No,Jayam College of Engineering - Dharmapuri,168000.0
-165.0,172.0,3337,CSE,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,190000.0
+165.0,172.0,3337,CSE,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,190000.0
 141.0,139.0,7478,Biotech,BC,Madurai,No,KLN College of Engineering - Pottapalayam,189000.0
 156.0,149.0,5915,Civil,MBC,Virudhunagar,No,Virudhunagar Engineering College - Virudhunagar,136000.0
 146.0,142.0,6553,Biotech,MBC,Villupuram,Yes,St. Joseph's College of Engineering - Villupuram,148000.0
@@ -12647,7 +12647,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 160.0,165.0,4256,IT,OC,Kancheepuram,No,Apollo Engineering College - Mevalurkuppam,191000.0
 137.0,143.0,8394,Aerospace,MBC,Ramanathapuram,Yes,Mohamed Sathak Engineering College - Ramanathapuram,158000.0
 131.0,131.0,10000,Biotech,MBC,Krishnagiri,No,T.J.S. Engineering College - Hosur,153000.0
-142.0,137.0,8313,Mechanical,ST,Trichy,No,National Institute of Technology Trichy - Thuvakudi,173000.0
+142.0,137.0,8313,Mechanical,ST,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,173000.0
 160.0,159.0,4584,CSE,MBC,Thoothukkudi,No,Thoothukkudi Engineering College - Thoothukkudi,186000.0
 150.0,152.0,5878,Civil,MBC,Pudukkottai,No,Sudharsan Engineering College - Pudukkottai,137000.0
 143.0,150.0,7417,ECE,OC,Cuddalore,No,CK College of Engineering - Cuddalore,159000.0
@@ -12959,7 +12959,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 149.0,149.0,6836,ECE,OC,Trichy,No,Sengunthar Engineering College - Thuraiyur,193000.0
 155.0,155.0,5913,Mechanical,ST,Erode,No,Bannari Amman Institute of Technology - Sathyamangalam,151000.0
 159.0,160.0,4455,IT,BC,Thoothukkudi,No,Dr. Sivanthi Aditanar College of Engineering - Thoothukkudi,168000.0
-130.0,130.0,10000,Mechanical,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,163000.0
+130.0,130.0,10000,Mechanical,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,163000.0
 159.0,155.0,4580,CSE,BC,Karur,No,V.S.B. Engineering College - Karur,170000.0
 152.0,149.0,6475,EEE,SC,Erode,No,Surya Engineering College - Mettur Dam,161000.0
 150.0,156.0,6759,Civil,BC,Tenkasi,No,S.V. College of Engineering - Tenkasi,132000.0
@@ -13248,7 +13248,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 156.0,163.0,5703,IT,MBC,Chennai,No,Sri Sairam Engineering College - Tambaram,221000.0
 157.0,160.0,5685,Chemical,SC,Cuddalore,No,V.R.S. College of Engineering - Villupuram,152000.0
 147.0,155.0,6618,EIE,ST,Dindigul,No,Dindigul Engineering College - Dindigul,159000.0
-158.0,160.0,5066,IT,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,198000.0
+158.0,160.0,5066,IT,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,198000.0
 141.0,133.0,7977,Mechanical,MBC,Sivagangai,No,C.E.C. College of Engineering - Sivagangai,161000.0
 148.0,152.0,6653,Civil,MBC,Erode,No,Akshaya College of Engineering - Coimbatore Road,163000.0
 162.0,163.0,4360,Civil,BC,Theni,No,Theni Kammavar Sangam College of Engineering - Theni,142000.0
@@ -13515,7 +13515,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 156.0,161.0,5882,Biotech,OC,Vellore,No,Aishwarya College of Engineering - Gudiyatham,178000.0
 155.0,150.0,5766,ECE,MBC,Madurai,No,P.T.R. College of Engineering - Austinpatti,209000.0
 150.0,152.0,6685,Mechanical,SC,Cuddalore,No,CK College of Engineering - Cuddalore,159000.0
-158.0,162.0,5403,Chemical,SC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,175000.0
+158.0,162.0,5403,Chemical,SC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,175000.0
 138.0,133.0,8373,Mechanical,MBC,Theni,No,Theni Kammavar Sangam College of Engineering - Theni,147000.0
 130.0,130.0,10000,Aerospace,SC,Tirunelveli,No,Jayamatha Engineering College - Aralvaimozhi,176000.0
 166.0,164.0,3281,ECE,ST,Karur,Yes,V.S.B. Engineering College - Karur,168000.0
@@ -13666,7 +13666,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 141.0,137.0,8601,EIE,MBC,Ramanathapuram,No,Sethu Institute of Technology - Ramanathapuram,150000.0
 147.0,154.0,6886,Aerospace,OC,Villupuram,Yes,Sri Venkateswara College of Engineering - Villupuram,155000.0
 160.0,155.0,4539,Aerospace,MBC,Kancheepuram,No,Sri Chandrasekharendra Saraswathi Viswa Mahavidyalaya - Enathur,206000.0
-142.0,135.0,8321,EEE,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,175000.0
+142.0,135.0,8321,EEE,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,175000.0
 144.0,137.0,7199,Mechanical,OC,Ranipet,No,Vels Institute of Technology - Ranipet,145000.0
 140.0,142.0,8791,ECE,BC,Kanyakumari,No,Mar Ephraem College of Engineering - Elavuvilai,158000.0
 155.0,155.0,5095,ECE,OC,Vellore,No,Aishwarya College of Engineering - Gudiyatham,209000.0
@@ -13881,7 +13881,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 148.0,150.0,6652,EEE,OC,Theni,No,Jayam College of Engineering - Theni,162000.0
 145.0,140.0,7171,IT,OC,Thiruvarur,No,S.T. Hindu College - Thiruvarur,169000.0
 137.0,136.0,8717,EEE,SC,Virudhunagar,No,V.P.M.M. Engineering College - Virudhunagar,172000.0
-157.0,152.0,4659,Biotech,SC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,167000.0
+157.0,152.0,4659,Biotech,SC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,167000.0
 134.0,132.0,9461,Mechanical,OC,Namakkal,No,M.P. Nachimuthu M.Jaganathan Engineering College - Chennimalai,159000.0
 147.0,153.0,7010,EEE,MBC,Sivagangai,No,Sudharsan Engineering College - Sivagangai,153000.0
 148.0,156.0,7246,IT,MBC,Villupuram,No,St. Joseph's College of Engineering - Villupuram,170000.0
@@ -14566,7 +14566,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 146.0,144.0,7680,EIE,OC,Kallakurichi,Yes,S.K.P. Engineering College - Kallakurichi,158000.0
 130.0,130.0,9808,EIE,BC,Virudhunagar,No,Virudhunagar Engineering College - Virudhunagar,156000.0
 142.0,136.0,8380,ECE,BC,Namakkal,No,Vivekanandha College of Engineering - Tiruchengode,176000.0
-155.0,156.0,5059,EIE,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,181000.0
+155.0,156.0,5059,EIE,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,181000.0
 132.0,131.0,9088,EIE,MBC,Thiruvallur,No,P.B. College of Engineering - Irungattukottai,194000.0
 164.0,162.0,3884,ECE,BC,Kancheepuram,No,Trichy Engineering College - Kanchipuram,200000.0
 146.0,141.0,7175,ECE,OC,Namakkal,Yes,K.S.R. College of Engineering - Tiruchengode,163000.0
@@ -14960,7 +14960,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 140.0,139.0,7610,Mechanical,BC,Trichy,No,K.Ramakrishnan College of Engineering - Samayapuram,175000.0
 159.0,155.0,4813,CSE,OC,Sivagangai,No,Sudharsan Engineering College - Sivagangai,182000.0
 141.0,146.0,8147,Aerospace,MBC,Perambalur,No,Perambalur College of Engineering - Perambalur,162000.0
-140.0,139.0,7679,Civil,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,150000.0
+140.0,139.0,7679,Civil,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,150000.0
 148.0,143.0,7084,Aerospace,OC,Cuddalore,No,St. Anne's College of Engineering - Panruti,158000.0
 146.0,145.0,6907,Aerospace,OC,Chengalpattu,No,Sri Venkateswara College of Engineering - Sriperumbudur,219000.0
 133.0,134.0,9192,EIE,SC,Cuddalore,No,Bharathidasan Engineering College - Nallur,150000.0
@@ -15689,7 +15689,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 134.0,135.0,9548,ECE,ST,Namakkal,No,Vivekanandha College of Engineering - Tiruchengode,166000.0
 152.0,159.0,5953,CSE,OC,Erode,No,K.S. Rangasamy College of Technology - Tiruchengode,182000.0
 145.0,141.0,7445,ECE,SC,Theni,Yes,Theni Engineering College - Theni,163000.0
-134.0,130.0,8767,Aerospace,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,197000.0
+134.0,130.0,8767,Aerospace,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,197000.0
 140.0,132.0,7764,ECE,OC,Madurai,No,Fatima Michael College of Engineering - Vadakku Vellalur,198000.0
 148.0,144.0,6653,CSE,BC,Karur,No,Sengunthar Engineering College - Karur,170000.0
 130.0,131.0,9783,Aerospace,ST,Thiruvarur,No,S.T. Hindu College - Thiruvarur,159000.0
@@ -15901,7 +15901,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 136.0,143.0,9195,Mechanical,MBC,Sivagangai,No,K.L.N. College of Engineering - Sivagangai,143000.0
 158.0,152.0,4853,Chemical,MBC,Ranipet,No,S.R.M. University - Ranipet,138000.0
 152.0,155.0,6406,Chemical,BC,Dharmapuri,No,M.K. University College - Dharmapuri,152000.0
-137.0,142.0,9125,IT,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,188000.0
+137.0,142.0,9125,IT,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,188000.0
 158.0,157.0,5042,ECE,OC,Vellore,No,Priyadarshini Engineering College - Vaniyambadi,222000.0
 144.0,143.0,6944,Chemical,BC,Erode,No,Nandha Engineering College - Erode,168000.0
 160.0,163.0,4485,Aerospace,ST,Theni,No,Jayam College of Engineering - Theni,170000.0
@@ -16103,7 +16103,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 131.0,139.0,10000,ECE,MBC,Cuddalore,No,CK College of Engineering - Cuddalore,156000.0
 153.0,150.0,5959,CSE,MBC,Perambalur,No,Srinivasan Engineering College - Perambalur,183000.0
 137.0,132.0,8365,EIE,BC,Kancheepuram,No,Apollo Engineering College - Mevalurkuppam,177000.0
-139.0,135.0,8881,Aerospace,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,194000.0
+139.0,135.0,8881,Aerospace,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,194000.0
 141.0,147.0,8564,Civil,MBC,Madurai,Yes,Sethu Institute of Technology - Pulloor,174000.0
 130.0,138.0,9761,Biotech,BC,Cuddalore,No,V.R.S. College of Engineering - Villupuram,162000.0
 135.0,131.0,8516,EEE,MBC,Ramanathapuram,No,Kamaraj College of Engineering - Ramanathapuram,158000.0
@@ -16221,7 +16221,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 158.0,150.0,5085,IT,ST,Ranipet,No,Vels Institute of Technology - Ranipet,170000.0
 141.0,142.0,8517,EIE,OC,Sivagangai,Yes,C.E.C. College of Engineering - Sivagangai,146000.0
 153.0,157.0,5855,Chemical,BC,Coimbatore,No,Government College of Technology - Thadagam Road,70000.0
-151.0,157.0,6109,Mechanical,ST,Trichy,No,National Institute of Technology Trichy - Thuvakudi,182000.0
+151.0,157.0,6109,Mechanical,ST,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,182000.0
 134.0,142.0,9131,EEE,MBC,Cuddalore,No,Achariya College of Engineering - Villianur,160000.0
 149.0,154.0,6573,ECE,MBC,Theni,No,Sree Sowdambika College of Engineering - Theni,156000.0
 151.0,158.0,6094,CSE,OC,Chengalpattu,No,St. Joseph's Institute of Technology - OMR,201000.0
@@ -16508,7 +16508,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 150.0,149.0,6825,CSE,OC,Ramanathapuram,Yes,Mohamed Sathak Engineering College - Ramanathapuram,169000.0
 152.0,144.0,6155,Mechanical,OC,Madurai,No,Vickram College of Engineering - Enathi,188000.0
 130.0,130.0,10000,EIE,OC,Vellore,Yes,Kingston Engineering College - Katpadi,190000.0
-131.0,136.0,9490,Chemical,OC,Trichy,Yes,National Institute of Technology Trichy - Thuvakudi,158000.0
+131.0,136.0,9490,Chemical,OC,Trichy,Yes,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,158000.0
 130.0,138.0,10000,Civil,OC,Pudukkottai,No,Sudharsan Engineering College - Pudukkottai,143000.0
 139.0,133.0,8069,EEE,MBC,Krishnagiri,No,P.S.V. College of Engineering - Krishnagiri,163000.0
 157.0,164.0,4860,Chemical,MBC,Kallakurichi,No,S.K.P. Engineering College - Kallakurichi,151000.0
@@ -16841,7 +16841,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 155.0,149.0,5302,EIE,OC,Tenkasi,Yes,Ponjesly College of Engineering - Tenkasi,164000.0
 137.0,136.0,8343,Civil,OC,Thiruvarur,Yes,A.V.C. College of Engineering - Thiruvarur,134000.0
 153.0,156.0,6219,CSE,OC,Chengalpattu,No,Valliammai Engineering College - Kattankulathur,229000.0
-130.0,130.0,10000,EIE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,170000.0
+130.0,130.0,10000,EIE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,170000.0
 159.0,156.0,4709,Aerospace,OC,Pudukkottai,No,Shanmuganathan Engineering College - Pudukkottai,159000.0
 138.0,131.0,9115,CSE,OC,Coimbatore,No,RVS College of Engineering - Sulur,237000.0
 161.0,164.0,4470,EEE,BC,Chennai,No,Jerusalem College of Engineering - Pallikaranai,206000.0
@@ -17248,7 +17248,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 155.0,157.0,5526,ECE,BC,Namakkal,No,Selvam College of Technology - Namakkal,176000.0
 138.0,145.0,8041,Biotech,BC,Thanjavur,No,A.V.C. College of Engineering - Mayiladuthurai,149000.0
 170.0,174.0,2731,IT,SC,Nagapattinam,No,M.R.K. College of Engineering - Nagapattinam,174000.0
-137.0,133.0,9201,Civil,SC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,161000.0
+137.0,133.0,9201,Civil,SC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,161000.0
 130.0,130.0,10000,Aerospace,ST,Karur,No,M.Kumarasamy College of Engineering - Karur,164000.0
 147.0,151.0,6842,Aerospace,BC,Chengalpattu,No,Dhanalakshmi College of Engineering - Tambaram,202000.0
 149.0,148.0,6277,CSE,SC,Tirunelveli,No,Rani Anna Government College - Alwarkurichi,70000.0
@@ -17608,7 +17608,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 149.0,146.0,6815,Biotech,MBC,Perambalur,No,Perambalur College of Engineering - Perambalur,165000.0
 132.0,130.0,9746,Biotech,OC,Perambalur,No,Perambalur College of Engineering - Perambalur,153000.0
 149.0,155.0,6029,ECE,ST,Sivagangai,No,R.V.S. Engineering College - Sivagangai,163000.0
-149.0,145.0,6153,IT,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,186000.0
+149.0,145.0,6153,IT,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,186000.0
 156.0,164.0,4865,Mechanical,ST,Salem,Yes,The Kavery Engineering College - Mecheri,155000.0
 150.0,147.0,6895,Biotech,MBC,Trichy,No,K.Ramakrishnan College of Engineering - Samayapuram,172000.0
 146.0,139.0,6543,Aerospace,MBC,Thanjavur,No,Arasu Engineering College - Kumbakonam,172000.0
@@ -17970,7 +17970,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 148.0,146.0,7067,Aerospace,ST,Krishnagiri,No,Sri Krishna College of Technology - Hosur,164000.0
 132.0,130.0,9492,Biotech,SC,Virudhunagar,No,Ramco Institute of Technology - Rajapalayam,148000.0
 135.0,135.0,9425,Biotech,SC,Virudhunagar,No,Ramco Institute of Technology - Rajapalayam,150000.0
-142.0,146.0,7587,Chemical,SC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,176000.0
+142.0,146.0,7587,Chemical,SC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,176000.0
 132.0,140.0,9802,Mechanical,BC,Dindigul,No,Sethu Institute of Technology - Dindigul,159000.0
 160.0,158.0,4784,Mechanical,OC,Theni,No,Jayam College of Engineering - Theni,147000.0
 134.0,142.0,9430,EIE,BC,Ramanathapuram,No,Syed Ammal Engineering College - Ramanathapuram,159000.0
@@ -19020,7 +19020,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 155.0,159.0,5393,ECE,ST,Karur,No,V.S.B. Engineering College - Karur,160000.0
 161.0,168.0,4107,CSE,OC,Kallakurichi,No,S.K.P. Engineering College - Kallakurichi,167000.0
 146.0,146.0,7206,IT,ST,Pudukkottai,No,Shanmuganathan Engineering College - Pudukkottai,182000.0
-130.0,130.0,9441,EIE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,176000.0
+130.0,130.0,9441,EIE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,176000.0
 141.0,138.0,7551,Aerospace,BC,Chengalpattu,No,Valliammai Engineering College - Kattankulathur,217000.0
 130.0,130.0,9465,Aerospace,MBC,Thiruvallur,No,R.M.D. Engineering College - Kavaraipettai,196000.0
 132.0,133.0,9875,IT,MBC,Trichy,Yes,Oxford Engineering College - Pirattiyur,191000.0
@@ -20040,7 +20040,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 159.0,154.0,4391,ECE,BC,Perambalur,No,Roever Engineering College - Perambalur,173000.0
 155.0,151.0,5556,CSE,BC,Karur,No,Sengunthar Engineering College - Karur,164000.0
 158.0,158.0,4494,Civil,ST,Thanjavur,No,A.V.C. College of Engineering - Mayiladuthurai,140000.0
-130.0,130.0,9658,Chemical,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,158000.0
+130.0,130.0,9658,Chemical,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,158000.0
 152.0,159.0,6094,EEE,ST,Madurai,No,Kamraj College of Engineering - Virudhunagar Road,205000.0
 157.0,159.0,4547,Mechanical,BC,Thiruvallur,No,P.B. College of Engineering - Irungattukottai,189000.0
 143.0,150.0,7339,ECE,BC,Karur,No,Karur College of Engineering - Karur,166000.0
@@ -20189,7 +20189,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 142.0,148.0,7416,Civil,OC,Karur,No,M.Kumarasamy College of Engineering - Karur,141000.0
 131.0,138.0,9386,Chemical,BC,Virudhunagar,No,S.Vellaichamy Nadar College - Virudhunagar,143000.0
 146.0,153.0,7629,Mechanical,MBC,Pudukkottai,No,Pudukkottai Engineering College - Pudukkottai,157000.0
-130.0,134.0,10000,Aerospace,OC,Trichy,Yes,National Institute of Technology Trichy - Thuvakudi,201000.0
+130.0,134.0,10000,Aerospace,OC,Trichy,Yes,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,201000.0
 145.0,141.0,7117,Chemical,SC,Ramanathapuram,No,Mohamed Sathak Engineering College - Ramanathapuram,138000.0
 151.0,154.0,5978,EIE,BC,Madurai,No,Fatima Michael College of Engineering - Vadakku Vellalur,193000.0
 135.0,130.0,8555,Chemical,MBC,Kancheepuram,No,Madha Engineering College - Kundrathur,166000.0
@@ -20297,7 +20297,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 161.0,166.0,4818,IT,BC,Tirunelveli,No,Einstein College of Engineering - Seethaparpanallur,176000.0
 131.0,130.0,9325,IT,BC,Thiruvallur,No,Vel Tech High Tech Engineering College - Avadi,217000.0
 130.0,136.0,9515,Mechanical,OC,Ranipet,No,Ranipet Engineering College - Ranipet,155000.0
-144.0,143.0,7111,CSE,ST,Trichy,No,National Institute of Technology Trichy - Thuvakudi,214000.0
+144.0,143.0,7111,CSE,ST,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,214000.0
 152.0,156.0,6074,ECE,OC,Kanyakumari,No,Bethlahem Institute of Engineering - Karungal,179000.0
 147.0,144.0,6599,ECE,BC,Theni,No,Jayam College of Engineering - Theni,173000.0
 156.0,149.0,4890,Aerospace,BC,Dindigul,Yes,R.V.S. College of Engineering - Dindigul,179000.0
@@ -20933,7 +20933,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 146.0,139.0,7052,Aerospace,SC,Tirunelveli,No,National College of Engineering - Karumathur,178000.0
 132.0,130.0,10000,Mechanical,OC,Kanyakumari,No,Vins Christian College - Nagercoil,152000.0
 162.0,163.0,4197,Mechanical,OC,Perambalur,No,Dhanalakshmi Srinivasan Engineering College - Perambalur,146000.0
-136.0,130.0,9241,Aerospace,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,182000.0
+136.0,130.0,9241,Aerospace,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,182000.0
 143.0,144.0,7085,Mechanical,MBC,Villupuram,No,Sri Manakula Vinayagar Engineering - Madagadipet,139000.0
 131.0,138.0,9666,IT,BC,Nagapattinam,No,E.G.S. Pillay Engineering College - Nagapattinam,172000.0
 151.0,159.0,6207,ECE,OC,Dindigul,No,Sethu Institute of Technology - Dindigul,175000.0
@@ -21876,7 +21876,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 145.0,144.0,7184,IT,MBC,Kallakurichi,No,S.K.P. Engineering College - Kallakurichi,171000.0
 130.0,134.0,9719,CSE,OC,Ramanathapuram,No,Kamaraj College of Engineering - Ramanathapuram,173000.0
 165.0,169.0,3493,CSE,BC,Chengalpattu,No,Sree Sastha Institute of Engineering - Chembarambakkam,225000.0
-143.0,147.0,7799,Civil,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,153000.0
+143.0,147.0,7799,Civil,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,153000.0
 154.0,162.0,5570,Biotech,BC,Villupuram,No,Bharathiyar Institute of Engineering - Villupuram,152000.0
 157.0,152.0,4687,Aerospace,BC,Vellore,No,Pallavan College of Engineering - Kanchipuram,207000.0
 157.0,152.0,5238,Civil,BC,Namakkal,Yes,Vivekanandha College of Engineering - Tiruchengode,137000.0
@@ -21965,7 +21965,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 141.0,147.0,8604,Mechanical,OC,Perambalur,No,Roever Engineering College - Perambalur,154000.0
 146.0,145.0,7665,Mechanical,BC,Madurai,No,Vickram College of Engineering - Enathi,167000.0
 146.0,145.0,7588,Biotech,BC,Madurai,No,KLN College of Engineering - Pottapalayam,178000.0
-149.0,144.0,6905,Mechanical,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,179000.0
+149.0,144.0,6905,Mechanical,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,179000.0
 147.0,151.0,7507,CSE,MBC,Kancheepuram,No,Trichy Engineering College - Kanchipuram,195000.0
 165.0,173.0,3448,Mechanical,SC,Dindigul,No,R.V.S. College of Engineering - Dindigul,163000.0
 151.0,159.0,5859,Civil,MBC,Tirunelveli,No,Nellai College of Engineering - Marthandam,158000.0
@@ -22013,7 +22013,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 151.0,154.0,5652,EEE,BC,Namakkal,Yes,K.S.R. College of Engineering - Tiruchengode,153000.0
 141.0,141.0,7586,ECE,ST,Nagapattinam,No,Nagapattinam Engineering College - Nagapattinam,154000.0
 138.0,142.0,9065,ECE,OC,Ranipet,No,Ranipet Engineering College - Ranipet,162000.0
-135.0,132.0,8926,Civil,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,150000.0
+135.0,132.0,8926,Civil,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,150000.0
 146.0,151.0,7485,ECE,OC,Chengalpattu,No,Sree Sastha Institute of Engineering - Chembarambakkam,199000.0
 130.0,130.0,9797,EIE,BC,Vellore,No,Dhanalakshmi Srinivasan College - Perambalur,185000.0
 138.0,142.0,8487,EIE,MBC,Chengalpattu,No,Sree Sastha Institute of Engineering - Chembarambakkam,187000.0
@@ -22671,7 +22671,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 144.0,144.0,7014,CSE,ST,Sivagangai,Yes,Sudharsan Engineering College - Sivagangai,181000.0
 134.0,130.0,9266,Chemical,BC,Sivagangai,Yes,R.V.S. Engineering College - Sivagangai,149000.0
 164.0,160.0,3641,Mechanical,SC,Dindigul,No,PSNA College of Engineering - Dindigul,142000.0
-130.0,130.0,9954,Chemical,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,163000.0
+130.0,130.0,9954,Chemical,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,163000.0
 166.0,159.0,2990,IT,SC,Karur,No,Chettinad College of Engineering - Karur,182000.0
 140.0,133.0,8171,Civil,OC,Sivagangai,No,C.E.C. College of Engineering - Sivagangai,139000.0
 146.0,149.0,6749,IT,BC,Trichy,No,K.Ramakrishnan College of Engineering - Samayapuram,187000.0
@@ -23208,7 +23208,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 157.0,161.0,5179,ECE,OC,Thanjavur,No,PRIST University - Vallam,164000.0
 142.0,145.0,7562,EEE,OC,Thoothukkudi,No,Dr. Sivanthi Aditanar College of Engineering - Thoothukkudi,160000.0
 141.0,133.0,8473,Mechanical,MBC,Perambalur,No,Roever Engineering College - Perambalur,158000.0
-139.0,145.0,7826,EIE,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,174000.0
+139.0,145.0,7826,EIE,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,174000.0
 170.0,167.0,3045,IT,SC,Chennai,Yes,Veltech University - Avadi,223000.0
 140.0,135.0,8223,EEE,BC,Thanjavur,No,Periyar Maniammai University - Vallam,170000.0
 144.0,152.0,7248,Chemical,BC,Chengalpattu,No,T.J.S. Engineering College - Peruvoyal,189000.0
@@ -23634,7 +23634,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 136.0,132.0,9510,Mechanical,BC,Tirunelveli,No,S.Vellaichamy Nadar College - Thatchanallur,156000.0
 164.0,162.0,3708,Mechanical,ST,Dharmapuri,No,V.M.K.V. Engineering College - Salem,159000.0
 131.0,138.0,9983,EIE,OC,Tirunelveli,No,Francis Xavier Engineering College - Pettai,175000.0
-130.0,130.0,10000,Biotech,MBC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,163000.0
+130.0,130.0,10000,Biotech,MBC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,163000.0
 136.0,130.0,8871,ECE,OC,Thiruvallur,No,Sri Muthukumaran Institute of Technology - Mangadu,197000.0
 135.0,130.0,9622,IT,SC,Tirunelveli,No,Nellai College of Engineering - Marthandam,167000.0
 136.0,134.0,8712,EIE,BC,Thiruvarur,Yes,K.M. Engineering College - Thiruvarur,155000.0
@@ -23690,7 +23690,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 157.0,151.0,5195,Civil,MBC,Dindigul,Yes,R.V.S. College of Engineering - Dindigul,137000.0
 139.0,137.0,8883,CSE,BC,Sivagangai,No,C.E.C. College of Engineering - Sivagangai,189000.0
 161.0,159.0,4894,Civil,ST,Dharmapuri,No,Government College of Engineering - Dharmapuri,51000.0
-143.0,148.0,7975,EEE,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,183000.0
+143.0,148.0,7975,EEE,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,183000.0
 132.0,130.0,9147,EIE,BC,Thiruvarur,No,S.T. Hindu College - Thiruvarur,163000.0
 159.0,151.0,4926,Chemical,OC,Ranipet,No,S.R.M. University - Ranipet,141000.0
 152.0,156.0,5897,CSE,MBC,Kancheepuram,No,Sri Chandrasekharendra Saraswathi Viswa Mahavidyalaya - Enathur,194000.0
@@ -23951,7 +23951,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 141.0,141.0,7527,Civil,MBC,Perambalur,No,Roever Engineering College - Perambalur,149000.0
 169.0,165.0,3566,IT,OC,Tirunelveli,No,Francis Xavier Engineering College - Pettai,169000.0
 140.0,140.0,8572,CSE,OC,Madurai,No,Raja College of Engineering - Usilampatti,195000.0
-154.0,147.0,5770,EEE,ST,Trichy,No,National Institute of Technology Trichy - Thuvakudi,193000.0
+154.0,147.0,5770,EEE,ST,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,193000.0
 130.0,130.0,10000,Civil,ST,Chengalpattu,No,Jeppiaar Institute of Technology - Sriperumbudur,170000.0
 160.0,166.0,4267,CSE,OC,Villupuram,Yes,Sri Venkateswara College of Engineering - Villupuram,164000.0
 130.0,130.0,9996,EIE,BC,Ranipet,Yes,S.R.M. University - Ranipet,157000.0
@@ -24233,7 +24233,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 139.0,133.0,8802,EEE,ST,Theni,No,V.P.N. College of Engineering - Theni,173000.0
 174.0,174.0,2042,IT,OC,Tirunelveli,No,Rani Anna Government College - Alwarkurichi,67000.0
 130.0,138.0,9434,Biotech,BC,Salem,No,Mahendra Engineering College - Mallasamudram,166000.0
-141.0,146.0,8487,EEE,BC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,188000.0
+141.0,146.0,8487,EEE,BC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,188000.0
 136.0,135.0,8831,Aerospace,ST,Dindigul,No,Vickram College of Engineering - Dindigul,164000.0
 150.0,142.0,6287,Aerospace,MBC,Thanjavur,No,Periyar Maniammai University - Vallam,185000.0
 158.0,154.0,5396,Aerospace,OC,Dharmapuri,No,Dharmapuri College of Engineering - Palacode,181000.0
@@ -24690,7 +24690,7 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 138.0,141.0,8904,IT,MBC,Kallakurichi,No,S.K.P. Engineering College - Kallakurichi,172000.0
 143.0,146.0,7270,EEE,MBC,Kancheepuram,No,Pallavan College of Engineering - Kanchipuram,182000.0
 151.0,159.0,6171,Aerospace,OC,Chennai,No,Saveetha Engineering College - Thandalam,231000.0
-146.0,148.0,7664,Mechanical,OC,Trichy,No,National Institute of Technology Trichy - Thuvakudi,164000.0
+146.0,148.0,7664,Mechanical,OC,Trichy,No,SRM UNIVERSITY (INSTITUTE OF SCIENCE & TECHNOLOGY)- TIRUCHIRAPPALLI,164000.0
 135.0,135.0,9258,Aerospace,OC,Theni,No,Theni Kammavar Sangam College of Engineering - Theni,170000.0
 130.0,133.0,10000,ECE,OC,Kanyakumari,No,Narayanaguru College of Engineering - Manjalumoodu,174000.0
 144.0,139.0,7320,EEE,OC,Krishnagiri,No,Sri Krishna College of Technology - Hosur,167000.0
@@ -24999,4 +24999,3 @@ cut_off,previous_year_cutoff,rank,branch,category,district,sports_quota,college_
 135.0,133.0,9578,Mechanical,MBC,Sivagangai,No,C.E.C. College of Engineering - Sivagangai,145000.0
 134.0,135.0,8801,Mechanical,SC,Krishnagiri,No,Hosur Institute of Technology - Hosur,145000.0
 155.0,152.0,5499,CSE,ST,Erode,No,Surya Engineering College - Mettur Dam,201000.0
-180.0,175.0,1000,CSE,OC,Chennai,No,Test College,50000.0

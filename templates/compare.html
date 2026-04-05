@@ -1,0 +1,695 @@
+{% extends "base.html" %}
+
+{% block title %}Compare Colleges — TNEA Predictor{% endblock %}
+
+{% block content %}
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<!-- ═══════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════ -->
+<div class="text-center mb-4">
+    <h2 class="fw-bold" style="color:var(--primary-green);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" class="me-2 mb-1">
+            <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4 4a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 1 0v-5A.5.5 0 0 0 4 6zm3-2a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 1 0v-7A.5.5 0 0 0 7 4zm3 3a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0v-4A.5.5 0 0 0 10 7zm3-3a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 1 0v-7A.5.5 0 0 0 13 4z"/>
+        </svg>
+        Compare Colleges
+    </h2>
+    <p class="text-muted">Select up to <strong>4 colleges</strong> to compare side-by-side with interactive charts.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     COLLEGE SELECTOR SLOTS
+     ═══════════════════════════════════════════════════ -->
+<div class="content-card mb-4" style="border-top:4px solid var(--primary-green);">
+    <div class="row g-3" id="selectorRow">
+        <!-- Slot 1 -->
+        <div class="col-md-3 col-6">
+            <label class="form-label section-label">College 1</label>
+            <div class="compare-slot" id="slot-0">
+                <input type="text" list="compareList" class="form-control compare-input" placeholder="Search college..." data-slot="0" autocomplete="off">
+                <button class="slot-clear-btn d-none" data-slot="0" title="Remove">✕</button>
+            </div>
+        </div>
+        <!-- Slot 2 -->
+        <div class="col-md-3 col-6">
+            <label class="form-label section-label">College 2</label>
+            <div class="compare-slot" id="slot-1">
+                <input type="text" list="compareList" class="form-control compare-input" placeholder="Search college..." data-slot="1" autocomplete="off">
+                <button class="slot-clear-btn d-none" data-slot="1" title="Remove">✕</button>
+            </div>
+        </div>
+        <!-- Slot 3 -->
+        <div class="col-md-3 col-6">
+            <label class="form-label section-label">College 3 <span class="text-muted fw-normal" style="font-size:.7rem;">(optional)</span></label>
+            <div class="compare-slot" id="slot-2">
+                <input type="text" list="compareList" class="form-control compare-input" placeholder="Search college..." data-slot="2" autocomplete="off">
+                <button class="slot-clear-btn d-none" data-slot="2" title="Remove">✕</button>
+            </div>
+        </div>
+        <!-- Slot 4 -->
+        <div class="col-md-3 col-6">
+            <label class="form-label section-label">College 4 <span class="text-muted fw-normal" style="font-size:.7rem;">(optional)</span></label>
+            <div class="compare-slot" id="slot-3">
+                <input type="text" list="compareList" class="form-control compare-input" placeholder="Search college..." data-slot="3" autocomplete="off">
+                <button class="slot-clear-btn d-none" data-slot="3" title="Remove">✕</button>
+            </div>
+        </div>
+    </div>
+    <datalist id="compareList">
+        {% for c in all_colleges %}
+        <option value="{{ c }}">
+        {% endfor %}
+    </datalist>
+    <div class="text-center mt-4">
+        <button type="button" id="compareBtn" class="btn btn-primary btn-lg px-5 compare-btn" onclick="doCompare()" disabled>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" class="me-2">
+                <path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm4 4a.5.5 0 0 0-.5.5v5a.5.5 0 0 0 1 0v-5A.5.5 0 0 0 4 6zm3-2a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 1 0v-7A.5.5 0 0 0 7 4zm3 3a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 1 0v-4A.5.5 0 0 0 10 7zm3-3a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 1 0v-7A.5.5 0 0 0 13 4z"/>
+            </svg>
+            Compare Now
+        </button>
+    </div>
+</div>
+
+<!-- Loading -->
+<div id="compareLoading" class="d-none text-center py-5">
+    <div class="spinner-border text-success" role="status"></div>
+    <p class="mt-2 text-muted fw-medium">Fetching college data…</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     COMPARISON RESULTS
+     ═══════════════════════════════════════════════════ -->
+<div id="compareResults" class="d-none">
+
+    <!-- Quick Stats Cards -->
+    <div id="quickStatsRow" class="row g-3 mb-4"></div>
+
+    <!-- Charts Section -->
+    <div class="row g-4 mb-4">
+        <!-- Placement Rate Chart -->
+        <div class="col-md-6">
+            <div class="content-card chart-card">
+                <h6 class="chart-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--primary-green)" viewBox="0 0 16 16"><path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1h-3z"/></svg>
+                    Placement Rate (%)
+                </h6>
+                <div class="chart-container">
+                    <canvas id="chartPlacement"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Package Comparison Chart -->
+        <div class="col-md-6">
+            <div class="content-card chart-card">
+                <h6 class="chart-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--primary-green)" viewBox="0 0 16 16"><path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.59v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718H4z"/></svg>
+                    Package Comparison (LPA)
+                </h6>
+                <div class="chart-container">
+                    <canvas id="chartPackage"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <!-- Fees Comparison Chart -->
+        <div class="col-md-6">
+            <div class="content-card chart-card">
+                <h6 class="chart-title">
+                    <span style="font-size:1rem;font-weight:700;color:var(--primary-green);">₹</span>
+                    Fees Comparison (₹)
+                </h6>
+                <div class="chart-container">
+                    <canvas id="chartFees"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- Radar Overview -->
+        <div class="col-md-6">
+            <div class="content-card chart-card">
+                <h6 class="chart-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--primary-green)" viewBox="0 0 16 16"><path d="M8 .5A7.5 7.5 0 1 0 15.5 8 7.508 7.508 0 0 0 8 .5zM1.5 8A6.5 6.5 0 1 1 8 14.5 6.508 6.508 0 0 1 1.5 8z"/><path d="M8 3a.5.5 0 0 1 .5.5V8a.5.5 0 0 1-.252.434l-3.5 2a.5.5 0 0 1-.496-.868L7.5 7.71V3.5A.5.5 0 0 1 8 3z"/></svg>
+                    Overall Comparison (Radar)
+                </h6>
+                <div class="chart-container">
+                    <canvas id="chartRadar"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Comparison Table -->
+    <div class="content-card mb-4">
+        <h6 class="chart-title mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--primary-green)" viewBox="0 0 16 16"><path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm15 2h-4v3h4V4zm0 4h-4v3h4V8zm0 4h-4v3h3a1 1 0 0 0 1-1v-2zM10 4H6v3h4V4zm0 4H6v3h4V8zm0 4H6v3h4v-3zM5 4H1v3h4V4zm0 4H1v3h4V8zm0 4H1v2a1 1 0 0 0 1 1h3v-3z"/></svg>
+            Detailed Comparison
+        </h6>
+        <div class="table-responsive">
+            <table class="table compare-table" id="compareTable">
+                <thead id="compareTableHead"></thead>
+                <tbody id="compareTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Branches Comparison -->
+    <div class="content-card mb-5">
+        <h6 class="chart-title mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--primary-green)" viewBox="0 0 16 16"><path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687z"/></svg>
+            Branches Offered
+        </h6>
+        <div id="branchesComparison"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     STYLES
+     ═══════════════════════════════════════════════════ -->
+<style>
+/* Section Label */
+.section-label { font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--primary-green); display:flex; align-items:center; gap:4px; }
+
+/* Compare Slot */
+.compare-slot { position:relative; }
+.compare-input { border-radius:12px; padding:12px 40px 12px 16px; font-size:.92rem; border:2px solid #e0e0e0; transition:border-color .2s, box-shadow .2s; }
+.compare-input:focus { border-color:var(--primary-green); box-shadow:0 0 0 3px rgba(0,105,92,.1); }
+.compare-input.filled { border-color:var(--primary-green); background:rgba(0,105,92,.03); font-weight:600; }
+.slot-clear-btn { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:rgba(239,68,68,.1); border:none; color:#ef4444; width:28px; height:28px; border-radius:50%; font-size:.8rem; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+.slot-clear-btn:hover { background:#ef4444; color:#fff; }
+
+/* Compare Button */
+.compare-btn { border-radius:14px !important; font-size:1.05rem; display:flex; align-items:center; justify-content:center; margin:0 auto; }
+
+/* Chart Card */
+.chart-card { padding:24px; }
+.chart-title { font-size:.85rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--primary-green); display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+.chart-container { position:relative; height:320px; width:100%; }
+
+/* Quick Stats */
+.qs-card { background:#fff; border-radius:16px; padding:20px; box-shadow: 0 4px 16px rgba(0,0,0,.05); border-top:4px solid; text-align:center; transition: transform .2s, box-shadow .2s; }
+.qs-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(0,105,92,.12); }
+.qs-name { font-size:.82rem; font-weight:700; margin-bottom:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.qs-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.qs-stat { background:rgba(0,105,92,.04); border-radius:10px; padding:10px 8px; }
+.qs-stat-label { font-size:.65rem; text-transform:uppercase; letter-spacing:.5px; color:#888; }
+.qs-stat-value { font-size:1.1rem; font-weight:700; color:var(--text-dark); }
+.qs-stat-value.green { color:#16a34a; }
+
+/* Compare Table */
+.compare-table { margin:0; }
+.compare-table thead th { background:linear-gradient(135deg, #f8faf9 0%, #f0f5f4 100%); font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--primary-green); padding:14px 16px; border-bottom:2px solid rgba(0,105,92,.15); white-space:nowrap; }
+.compare-table thead th:first-child { position:sticky; left:0; z-index:2; background:linear-gradient(135deg, #f8faf9 0%, #f0f5f4 100%); }
+.compare-table tbody td { padding:14px 16px; font-size:.88rem; border-bottom:1px solid #f3f3f3; vertical-align:middle; }
+.compare-table tbody td:first-child { font-weight:600; color:#555; font-size:.78rem; text-transform:uppercase; letter-spacing:.3px; position:sticky; left:0; background:#fff; z-index:1; }
+.compare-table tbody tr:hover td { background:rgba(0,105,92,.02); }
+.compare-table .highlight { font-weight:700; color:var(--primary-green); }
+.compare-table .best-value { background:rgba(22,163,74,.08) !important; font-weight:700; color:#16a34a; }
+
+/* Branch Tags */
+.branch-col { display:flex; flex-direction:column; gap:4px; }
+.branch-tag { display:inline-block; background:rgba(0,105,92,.06); color:var(--primary-green); padding:3px 10px; border-radius:12px; font-size:.78rem; font-weight:500; }
+.branch-tag.unique { background:rgba(22,163,74,.12); color:#16a34a; font-weight:600; border:1px solid rgba(22,163,74,.25); }
+.branch-tag.common { background:#f5f5f5; color:#888; }
+
+/* Winner Badge */
+.winner-badge { display:inline-flex; align-items:center; gap:4px; background:linear-gradient(135deg, #f0fdf4, #dcfce7); color:#16a34a; padding:3px 10px; border-radius:12px; font-size:.72rem; font-weight:700; }
+.winner-badge svg { width:12px; height:12px; }
+
+@media(max-width:768px) {
+    .qs-grid { grid-template-columns:1fr; }
+    .chart-card canvas { height:200px !important; }
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════════ -->
+<script>
+
+const COLORS = [
+    { bg: 'rgba(0, 86, 210, 0.7)',   border: '#0056D2', light: 'rgba(0, 86, 210, 0.15)' },    // Coursera Blue
+    { bg: 'rgba(225, 29, 72, 0.7)',  border: '#E11D48', light: 'rgba(225, 29, 72, 0.15)' },   // Rose/Crimson
+    { bg: 'rgba(13, 148, 136, 0.7)', border: '#0D9488', light: 'rgba(13, 148, 136, 0.15)' },  // Vibrant Teal
+    { bg: 'rgba(124, 58, 237, 0.7)', border: '#7C3AED', light: 'rgba(124, 58, 237, 0.15)' },  // Deep Purple
+];
+
+let slots = [null, null, null, null];
+let compareData = [];
+let charts = {};
+
+// ─── Slot Input Handling ───
+document.querySelectorAll('.compare-input').forEach(input => {
+    input.addEventListener('change', function() {
+        const idx = parseInt(this.dataset.slot);
+        const val = this.value.trim();
+        if (val) {
+            slots[idx] = val;
+            this.classList.add('filled');
+            this.closest('.compare-slot').querySelector('.slot-clear-btn').classList.remove('d-none');
+        } else {
+            slots[idx] = null;
+            this.classList.remove('filled');
+            this.closest('.compare-slot').querySelector('.slot-clear-btn').classList.add('d-none');
+        }
+        updateCompareBtn();
+    });
+});
+
+document.querySelectorAll('.slot-clear-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const idx = parseInt(this.dataset.slot);
+        slots[idx] = null;
+        const input = this.closest('.compare-slot').querySelector('.compare-input');
+        input.value = '';
+        input.classList.remove('filled');
+        this.classList.add('d-none');
+        updateCompareBtn();
+    });
+});
+
+function updateCompareBtn() {
+    const filled = slots.filter(s => s !== null).length;
+    document.getElementById('compareBtn').disabled = filled < 2;
+}
+
+// ─── Prefill from URL params ───
+function prefillFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    for (let i = 0; i < 4; i++) {
+        const val = params.get('c' + (i+1));
+        if (val) {
+            slots[i] = val;
+            const input = document.querySelector(`.compare-input[data-slot="${i}"]`);
+            input.value = val;
+            input.classList.add('filled');
+            input.closest('.compare-slot').querySelector('.slot-clear-btn').classList.remove('d-none');
+        }
+    }
+    updateCompareBtn();
+    if (slots.filter(s => s).length >= 2) {
+        setTimeout(() => doCompare(), 300);
+    }
+}
+
+// ─── Format Helpers ───
+function fmtFee(val) {
+    if (!val && val !== 0) return '—';
+    if (val >= 100000) return '₹' + (val / 100000).toFixed(1) + 'L';
+    if (val >= 1000) return '₹' + (val / 1000).toFixed(0) + 'K';
+    return '₹' + val;
+}
+function fmtLPA(val) { return val ? val.toFixed(2) + ' LPA' : '—'; }
+function fmtPct(val) { return val ? val.toFixed(1) + '%' : '—'; }
+function shortName(name) {
+    if (!name) return '';
+    const parts = name.split(' - ');
+    return parts[0].length > 30 ? parts[0].substring(0, 28) + '…' : parts[0];
+}
+
+// ─── Main Compare ───
+async function doCompare() {
+    const selected = slots.filter(s => s !== null);
+    if (selected.length < 2) { alert('Please select at least 2 colleges to compare.'); return; }
+
+    document.getElementById('compareResults').classList.add('d-none');
+    document.getElementById('compareLoading').classList.remove('d-none');
+    document.getElementById('compareBtn').disabled = true;
+
+    try {
+        const resp = await fetch('/api/compare', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ colleges: selected })
+        });
+        const data = await resp.json();
+        if (!data.ok) {
+            alert(data.error || 'Comparison failed.');
+            return;
+        }
+        compareData = data.colleges;
+        renderComparison(data.colleges);
+    } catch(e) {
+        alert('Network error. Please try again.');
+    } finally {
+        document.getElementById('compareLoading').classList.add('d-none');
+        document.getElementById('compareBtn').disabled = false;
+    }
+}
+
+// ─── Render All ───
+function renderComparison(colleges) {
+    document.getElementById('compareResults').classList.remove('d-none');
+    renderQuickStats(colleges);
+    renderCharts(colleges);
+    renderTable(colleges);
+    renderBranches(colleges);
+    document.getElementById('compareResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ─── Quick Stats Cards ───
+function renderQuickStats(colleges) {
+    const row = document.getElementById('quickStatsRow');
+    const colSize = colleges.length <= 2 ? 'col-md-6' : (colleges.length === 3 ? 'col-md-4' : 'col-md-3');
+    let html = '';
+    colleges.forEach((c, i) => {
+        const color = COLORS[i];
+        html += `
+        <div class="${colSize} col-6">
+            <div class="qs-card" style="border-top-color:${color.border};">
+                <div class="qs-name" style="color:${color.border};" title="${c.name}">${shortName(c.name)}</div>
+                <div class="qs-grid">
+                    <div class="qs-stat">
+                        <div class="qs-stat-label">Placement</div>
+                        <div class="qs-stat-value green">${fmtPct(c.placement_rate)}</div>
+                    </div>
+                    <div class="qs-stat">
+                        <div class="qs-stat-label">Avg Package</div>
+                        <div class="qs-stat-value">${fmtLPA(c.avg_package)}</div>
+                    </div>
+                    <div class="qs-stat">
+                        <div class="qs-stat-label">Annual Fee</div>
+                        <div class="qs-stat-value">${fmtFee(c.fee_avg)}</div>
+                    </div>
+                    <div class="qs-stat">
+                        <div class="qs-stat-label">Branches</div>
+                        <div class="qs-stat-value">${c.branches ? c.branches.length : '—'}</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    });
+    row.innerHTML = html;
+}
+
+// ─── Charts ───
+function renderCharts(colleges) {
+    // Destroy existing charts
+    Object.values(charts).forEach(ch => ch.destroy());
+    charts = {};
+
+    const labels = colleges.map(c => shortName(c.name));
+    const tooltipFont = { family: "'Inter', sans-serif", size: 12 };
+
+    // 1. Placement Rate Bar Chart
+    charts.placement = new Chart(document.getElementById('chartPlacement'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                label: 'Placement Rate (%)',
+                data: colleges.map(c => c.placement_rate || 0),
+                backgroundColor: colleges.map((_, i) => COLORS[i].bg),
+                borderColor: colleges.map((_, i) => COLORS[i].border),
+                borderWidth: 2,
+                borderRadius: 8,
+                barPercentage: 0.6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { titleFont: tooltipFont, bodyFont: tooltipFont,
+                    callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '%' }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%', font: tooltipFont }, grid: { color: 'rgba(0,0,0,.04)' } },
+                x: { ticks: { font: { ...tooltipFont, size: 10 }, maxRotation: 15 }, grid: { display: false } }
+            }
+        }
+    });
+
+    // 2. Package Grouped Bar
+    charts.pkg = new Chart(document.getElementById('chartPackage'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'Avg Package',
+                    data: colleges.map(c => c.avg_package || 0),
+                    backgroundColor: colleges.map((_, i) => COLORS[i].bg),
+                    borderColor: colleges.map((_, i) => COLORS[i].border),
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    barPercentage: 0.5,
+                },
+                {
+                    label: 'Highest Package',
+                    data: colleges.map(c => c.highest_package || 0),
+                    backgroundColor: colleges.map((_, i) => COLORS[i].light),
+                    borderColor: colleges.map((_, i) => COLORS[i].border),
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    borderDash: [4, 4],
+                    barPercentage: 0.5,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: tooltipFont, usePointStyle: true, pointStyle: 'rectRounded' } },
+                tooltip: { titleFont: tooltipFont, bodyFont: tooltipFont,
+                    callbacks: { label: ctx => ctx.dataset.label + ': ₹' + ctx.parsed.y.toFixed(2) + ' LPA' }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { callback: v => '₹' + v + 'L', font: tooltipFont }, grid: { color: 'rgba(0,0,0,.04)' } },
+                x: { ticks: { font: { ...tooltipFont, size: 10 }, maxRotation: 15 }, grid: { display: false } }
+            }
+        }
+    });
+
+    // 3. Fees Stacked Bar
+    charts.fees = new Chart(document.getElementById('chartFees'), {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'Tuition Fee',
+                    data: colleges.map(c => c.fee_avg || 0),
+                    backgroundColor: colleges.map((_, i) => COLORS[i].bg),
+                    borderColor: colleges.map((_, i) => COLORS[i].border),
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    barPercentage: 0.5,
+                },
+                {
+                    label: 'Hostel Fee',
+                    data: colleges.map(c => c.hostel_fee || 0),
+                    backgroundColor: colleges.map((_, i) => COLORS[i].light),
+                    borderColor: colleges.map((_, i) => COLORS[i].border),
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    barPercentage: 0.5,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: tooltipFont, usePointStyle: true, pointStyle: 'rectRounded' } },
+                tooltip: { titleFont: tooltipFont, bodyFont: tooltipFont,
+                    callbacks: { label: ctx => ctx.dataset.label + ': ' + fmtFee(ctx.parsed.y) }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, stacked: true, ticks: { callback: v => fmtFee(v), font: tooltipFont }, grid: { color: 'rgba(0,0,0,.04)' } },
+                x: { stacked: true, ticks: { font: { ...tooltipFont, size: 10 }, maxRotation: 15 }, grid: { display: false } }
+            }
+        }
+    });
+
+    // 4. Radar Chart
+    // Normalize values to 0-100 scale
+    const maxPkg = Math.max(...colleges.map(c => c.highest_package || 0), 1);
+    const maxFee = Math.max(...colleges.map(c => (c.fee_avg || 0) + (c.hostel_fee || 0)), 1);
+    const maxBranches = Math.max(...colleges.map(c => c.branches ? c.branches.length : 0), 1);
+
+    const radarDatasets = colleges.map((c, i) => ({
+        label: shortName(c.name),
+        data: [
+            c.placement_rate || 0,
+            ((c.avg_package || 0) / maxPkg) * 100,
+            ((c.highest_package || 0) / maxPkg) * 100,
+            (1 - ((c.fee_avg || 0) / maxFee)) * 100,  // lower fee = better
+            (c.branches ? c.branches.length / maxBranches : 0) * 100,
+        ],
+        backgroundColor: COLORS[i].light,
+        borderColor: COLORS[i].border,
+        borderWidth: 2,
+        pointBackgroundColor: COLORS[i].border,
+        pointBorderColor: '#fff',
+        pointRadius: 4,
+    }));
+
+    charts.radar = new Chart(document.getElementById('chartRadar'), {
+        type: 'radar',
+        data: {
+            labels: ['Placement %', 'Avg Package', 'Highest Package', 'Affordability', 'Branch Variety'],
+            datasets: radarDatasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: tooltipFont, usePointStyle: true, pointStyle: 'circle' } }
+            },
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: { stepSize: 20, font: { size: 9 }, backdropColor: 'transparent' },
+                    grid: { color: 'rgba(0,0,0,.06)' },
+                    pointLabels: { font: { size: 11, family: "'Inter', sans-serif", weight: '600' } }
+                }
+            }
+        }
+    });
+}
+
+// ─── Comparison Table ───
+function renderTable(colleges) {
+    const thead = document.getElementById('compareTableHead');
+    const tbody = document.getElementById('compareTableBody');
+
+    // Header
+    let hdr = '<tr><th>Parameter</th>';
+    colleges.forEach((c, i) => {
+        hdr += `<th style="border-bottom:3px solid ${COLORS[i].border};">${shortName(c.name)}</th>`;
+    });
+    hdr += '</tr>';
+    thead.innerHTML = hdr;
+
+    // Rows
+    const rows = [
+        { label: 'Location', key: 'location', fmt: v => v || '—' },
+        { label: 'College Type', key: 'college_type', fmt: v => v || '—' },
+        { label: 'Affiliation', key: 'affiliation', fmt: v => v || '—' },
+        { label: 'Placement Rate', key: 'placement_rate', fmt: fmtPct, best: 'max' },
+        { label: 'Avg Package', key: 'avg_package', fmt: fmtLPA, best: 'max' },
+        { label: 'Highest Package', key: 'highest_package', fmt: fmtLPA, best: 'max' },
+        { label: 'Annual Fee (Avg)', key: 'fee_avg', fmt: fmtFee, best: 'min' },
+        { label: 'Fee Range', key: null, fmt: null, custom: c => (c.fee_min && c.fee_max) ? fmtFee(c.fee_min) + ' – ' + fmtFee(c.fee_max) : '—' },
+        { label: '4-Year Total', key: 'fee_avg', fmt: v => v ? fmtFee(v * 4) : '—', best: 'min' },
+        { label: 'Hostel Fee', key: 'hostel_fee', fmt: fmtFee },
+        { label: 'Branches Count', key: null, custom: c => c.branches ? c.branches.length : '—', best: 'max_custom' },
+    ];
+
+    let bodyHtml = '';
+    for (const row of rows) {
+        bodyHtml += '<tr>';
+        bodyHtml += `<td>${row.label}</td>`;
+
+        let vals = [];
+        colleges.forEach(c => {
+            if (row.custom) {
+                vals.push(row.custom(c));
+            } else {
+                vals.push(c[row.key]);
+            }
+        });
+
+        // Determine best
+        let bestIdx = -1;
+        if (row.best === 'max') {
+            const numVals = vals.map(v => typeof v === 'number' ? v : -Infinity);
+            const maxVal = Math.max(...numVals);
+            if (maxVal > -Infinity) bestIdx = numVals.indexOf(maxVal);
+        } else if (row.best === 'min') {
+            const numVals = vals.map(v => (typeof v === 'number' && v > 0) ? v : Infinity);
+            const minVal = Math.min(...numVals);
+            if (minVal < Infinity) bestIdx = numVals.indexOf(minVal);
+        } else if (row.best === 'max_custom') {
+            const numVals = vals.map(v => typeof v === 'number' ? v : -Infinity);
+            const maxVal = Math.max(...numVals);
+            if (maxVal > -Infinity) bestIdx = numVals.indexOf(maxVal);
+        }
+
+        colleges.forEach((c, i) => {
+            let display;
+            if (row.custom) {
+                display = row.custom(c);
+            } else {
+                display = row.fmt ? row.fmt(vals[i]) : (vals[i] || '—');
+            }
+            const isBest = (i === bestIdx && bestIdx >= 0);
+            bodyHtml += `<td class="${isBest ? 'best-value' : ''}">
+                ${display}
+                ${isBest ? ' <span class="winner-badge"><svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M2.5.5A.5.5 0 0 1 3 0h10a.5.5 0 0 1 .5.5c0 .538-.012 1.05-.034 1.536a3 3 0 1 1-1.133 5.89c-.79 1.865-1.878 2.777-2.833 3.011v2.173l1.425.356c.194.048.377.135.537.255L13.3 15.1a.5.5 0 0 1-.3.9H3a.5.5 0 0 1-.3-.9l1.838-1.379c.16-.12.343-.207.537-.255L6.5 13.11v-2.173c-.955-.234-2.043-1.146-2.833-3.012a3 3 0 1 1-1.132-5.89A33.076 33.076 0 0 1 2.5.5z"/></svg> Best</span>' : ''}
+            </td>`;
+        });
+        bodyHtml += '</tr>';
+    }
+    tbody.innerHTML = bodyHtml;
+}
+
+// ─── Branches Comparison ───
+function renderBranches(colleges) {
+    const container = document.getElementById('branchesComparison');
+
+    // Collect all branches
+    const allBranches = new Set();
+    colleges.forEach(c => {
+        if (c.branches) c.branches.forEach(b => allBranches.add(b));
+    });
+    const sortedBranches = [...allBranches].sort();
+
+    // How many offer each branch
+    const branchCount = {};
+    sortedBranches.forEach(b => {
+        branchCount[b] = colleges.filter(c => c.branches && c.branches.includes(b)).length;
+    });
+
+    // Show per college
+    const colSize = colleges.length <= 2 ? 'col-md-6' : (colleges.length === 3 ? 'col-md-4' : 'col-md-3');
+    let html = '<div class="row g-3">';
+    colleges.forEach((c, i) => {
+        const color = COLORS[i];
+        html += `<div class="${colSize} col-6">
+            <div style="border-top:3px solid ${color.border}; padding:16px; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,.04);">
+                <div style="font-weight:700; font-size:.82rem; color:${color.border}; margin-bottom:10px;" title="${c.name}">${shortName(c.name)}</div>
+                <div class="d-flex flex-wrap gap-1">`;
+
+        if (c.branches && c.branches.length) {
+            c.branches.sort().forEach(b => {
+                const isUnique = branchCount[b] === 1;
+                html += `<span class="branch-tag ${isUnique ? 'unique' : ''}" title="${isUnique ? 'Only this college offers this branch' : ''}">${b}${isUnique ? ' ★' : ''}</span>`;
+            });
+        } else {
+            html += '<span class="text-muted" style="font-size:.82rem;">No branch data</span>';
+        }
+        html += `</div></div></div>`;
+    });
+    html += '</div>';
+
+    // Common branches
+    const common = sortedBranches.filter(b => branchCount[b] === colleges.length);
+    if (common.length > 0) {
+        html += `<div class="mt-3" style="padding:14px 18px; background:rgba(0,105,92,.04); border-radius:12px; border:1px solid rgba(0,105,92,.1);">
+            <div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--primary-green); margin-bottom:8px;">Common Branches (offered by all)</div>
+            <div class="d-flex flex-wrap gap-1">
+                ${common.map(b => '<span class="branch-tag common">' + b + '</span>').join('')}
+            </div>
+        </div>`;
+    }
+
+    container.innerHTML = html;
+}
+
+// ─── Init ───
+document.addEventListener('DOMContentLoaded', prefillFromURL);
+
+</script>
+
+{% endblock %}

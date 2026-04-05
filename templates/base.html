@@ -17,16 +17,16 @@
            1. CSS Variables (Theme Colors)
            ----------------------------------- */
         :root {
-            --primary-green: #00695c;
-            --primary-green-light: #4db6ac;
-            --primary-gradient: linear-gradient(135deg, #00695c 0%, #004d40 100%);
-            --accent-green: #2e7d32;
-            --bg-body: #f4f9f7;
+            --primary-green: #0056D2; /* Repurposed to Coursera Blue */
+            --primary-green-light: #2A73E8; 
+            --primary-gradient: linear-gradient(135deg, #0056D2 0%, #003681 100%);
+            --accent-green: #003D99;
+            --bg-body: #F5F7FA;
             --bg-card: #ffffff;
-            --text-dark: #1a1a1a;
-            --text-muted: #5a5a5a;
-            --shadow-soft: 0 8px 24px rgba(0, 105, 92, 0.08);
-            --shadow-hover: 0 12px 32px rgba(0, 105, 92, 0.15);
+            --text-dark: #1F2937;
+            --text-muted: #6B7280;
+            --shadow-soft: 0 8px 24px rgba(0, 86, 210, 0.06);
+            --shadow-hover: 0 12px 32px rgba(0, 86, 210, 0.12);
             --radius-lg: 16px;
             --radius-md: 10px;
         }
@@ -117,24 +117,24 @@
     background-image: var(--primary-gradient);
     border: none;
     color: #fff;
-    box-shadow: 0 4px 12px rgba(0, 105, 92, 0.25);
+    box-shadow: 0 4px 12px rgba(0, 86, 210, 0.25);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px); /* Subtle lift effect */
-    box-shadow: 0 6px 16px rgba(0, 105, 92, 0.35);
-    background-image: linear-gradient(135deg, #004d40 0%, #00695c 100%);
+    box-shadow: 0 6px 16px rgba(0, 86, 210, 0.35);
+    background-image: linear-gradient(135deg, #003681 0%, #0056D2 100%);
 }
 
 /* Outline Button */
 .btn-outline-secondary {
     color: var(--primary-green);
-    border-color: rgba(0, 105, 92, 0.2);
+    border-color: rgba(0, 86, 210, 0.2);
     background-color: transparent;
 }
 
 .btn-outline-secondary:hover {
-    background-color: rgba(0, 105, 92, 0.05);
+    background-color: rgba(0, 86, 210, 0.05);
     border-color: var(--primary-green);
     color: var(--primary-green);
     transform: translateY(-1px);
@@ -256,6 +256,7 @@
                             Welcome back, <strong>{{ session.username }}</strong>
                         </span>
                         <a class="btn btn-outline-secondary" href="{{ url_for('chatbot_page') }}">AI Chatbot</a>
+                        <a class="btn btn-outline-secondary" href="{{ url_for('compare_page') }}">Compare</a>
                         <a class="btn btn-outline-secondary" href="{{ url_for('dashboard') }}">Dashboard</a>
                         <a class="btn btn-outline-secondary" href="{{ url_for('history') }}">History</a>
                         <a class="btn btn-outline-danger" href="{{ url_for('logout') }}">Logout</a>

@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for, flash, g, jsonify
+import sys
 import sqlite3
 import pandas as pd
 import numpy as np
@@ -197,6 +198,10 @@ GENERATED_DETAILS_CSV_PATH = "college_details_generated.csv"
 try:
     colleges_df = pd.read_csv(CSV_PATH)
     if not colleges_df.empty and 'college_name' in colleges_df.columns:
+        # Globally exclude unwanted branches from the entire application
+        if 'branch' in colleges_df.columns:
+            colleges_df = colleges_df[~colleges_df['branch'].astype(str).str.lower().isin(['aerospace', 'biotech'])]
+        
         colleges_df['_name_lower'] = colleges_df['college_name'].astype(str).str.lower()
 except Exception:
     colleges_df = pd.DataFrame()
@@ -912,352 +917,470 @@ DISTRICT_MAP = {
     # add more known variations if needed after checking encoder classes
 }
 
+# Keep legacy function for backward compatibility (history page)
 def predict_single_student(input_dict, top_n=3):
     user_cut_off = float(input_dict.get('cut_off', 0))
     user_branch = str(input_dict.get('branch', '')).strip()
     user_category = str(input_dict.get('category', '')).strip()
     user_district = str(input_dict.get('district', '')).strip()
-    
     if colleges_df.empty:
         return "Dataset not found", []
-
-    # 1. Filter by Category and Branch
     mask = (colleges_df['category'].str.upper() == user_category.upper()) & \
            (colleges_df['branch'].str.upper() == user_branch.upper())
     filtered = colleges_df[mask].copy()
-
     if filtered.empty:
-        # Relax branch constraint if no exact matches, just match category
         mask = (colleges_df['category'].str.upper() == user_category.upper())
         filtered = colleges_df[mask].copy()
-        
     if filtered.empty:
         return "No Matching College Found", []
-
-    # 2. Calculate Gap (Student Score - Required Score)
-    # Positive gap = Safe, Negative gap = Ambitious
     filtered['gap'] = user_cut_off - filtered['cut_off']
     filtered['abs_gap'] = filtered['gap'].abs()
-    
-    # 3. Keep a reasonable range of colleges (e.g. from 15 points below to safe options)
     realistic = filtered[filtered['gap'] >= -15.0].copy()
     if realistic.empty:
         realistic = filtered.copy()
-
-    # 4. Handle District Matching
-    realistic['district_match'] = 0
     if user_district and user_district.lower() not in ['all', 'others', 'any']:
-        realistic['district_match'] = np.where(realistic['district'].str.lower() == user_district.lower(), 1, 0)
-    
-    # 5. Sort to find best options
-    # We want district matches first.
-    # Within those, we want the colleges whose cutoffs closest match the student's cutoff!
-    realistic = realistic.sort_values(by=['district_match', 'abs_gap'], ascending=[False, True])
-    
-    # Drop duplicates to prevent the same college from appearing multiple times
+        realistic = realistic[realistic['district'].str.lower() == user_district.lower()]
+        if realistic.empty:
+            return f"No Matching College Found in {user_district}", []
+    realistic = realistic.sort_values(by=['abs_gap'], ascending=[True])
     realistic = realistic.drop_duplicates(subset=['college_name'], keep='first')
-    
     top_colleges_df = realistic.head(top_n)
-    top_colleges = []
-    top_probs = []
-    
+    results = []
     for _, row in top_colleges_df.iterrows():
-        college_name = str(row['college_name'])
         gap = float(row['gap'])
-        
-        # Convert score gap into a percentage match probability
-        # The user requested top matches to be exactly in the 75-80% range
-        if gap >= 2:
-            prob = min(0.80, 0.75 + (gap - 2) * 0.01)
-        elif gap >= 0:
-            prob = 0.68 + (gap * 0.035)  # 68% to 75%
-        elif gap >= -2:
-            prob = 0.55 + ((gap + 2) * 0.065)  # 55% to 68%
-        else:
-            prob = max(0.15, 0.55 + (gap * 0.05))
-            
-        top_colleges.append(college_name)
-        top_probs.append(prob)
-        
-    best_college = top_colleges[0] if top_colleges else "No Match"
-    return best_college, list(zip(top_colleges, top_probs))
+        if gap >= 2: prob = min(0.80, 0.75 + (gap - 2) * 0.01)
+        elif gap >= 0: prob = 0.68 + (gap * 0.035)
+        elif gap >= -2: prob = 0.55 + ((gap + 2) * 0.065)
+        else: prob = max(0.15, 0.55 + (gap * 0.05))
+        results.append((str(row['college_name']), prob))
+    best = results[0][0] if results else "No Match"
+    return best, results
 
 
-@app.route('/predict', methods=['GET', 'POST'], endpoint='predict')
-def index():
+# ──────────────────────────────────────────────────────────────
+# CollegeDP-style Prediction Engine
+# ──────────────────────────────────────────────────────────────
+
+def _compute_branch_chance(user_cutoff, branch_min, branch_avg, branch_max):
+    """Compute admission chance % for a single branch given user cutoff and branch stats."""
+    if user_cutoff >= branch_max:
+        # Well above the highest cutoff — very high chance
+        overshoot = user_cutoff - branch_max
+        chance = min(99, 85 + overshoot * 0.5)
+    elif user_cutoff >= branch_avg:
+        # Between avg and max — moderate-high chance
+        span = max(branch_max - branch_avg, 0.1)
+        ratio = (user_cutoff - branch_avg) / span
+        chance = 55 + ratio * 30  # 55% to 85%
+    elif user_cutoff >= branch_min:
+        # Between min and avg — moderate-low chance
+        span = max(branch_avg - branch_min, 0.1)
+        ratio = (user_cutoff - branch_min) / span
+        chance = 25 + ratio * 30  # 25% to 55%
+    else:
+        # Below minimum — low chance
+        deficit = branch_min - user_cutoff
+        chance = max(2, 25 - deficit * 1.5)
+    return round(chance)
+
+
+def _chance_level(chance_pct):
+    """Map chance percentage to a level string."""
+    if chance_pct >= 60:
+        return 'high'
+    elif chance_pct >= 30:
+        return 'moderate'
+    return 'low'
+
+
+def predict_colleges(user_cutoff, category, district=None, sort_by='best_match', page=1, per_page=25, max_fee=None, search_query=None):
+    """
+    CollegeDP-style prediction engine.
+
+    Returns:
+        dict with keys: colleges (list), total, page, per_page, total_pages
+    """
+    if colleges_df.empty:
+        return {'colleges': [], 'total': 0, 'page': 1, 'per_page': per_page, 'total_pages': 0}
+
+    # 1. Filter by category
+    cat_upper = str(category).strip().upper()
+    filtered = colleges_df[colleges_df['category'].str.upper() == cat_upper].copy()
+    if filtered.empty:
+        return {'colleges': [], 'total': 0, 'page': 1, 'per_page': per_page, 'total_pages': 0}
+
+    # 1b. Exclude unwanted branches (now handled globally on load, but keeping safe guard)
+
+    # 2. Optional district filter
+    if district and str(district).strip().lower() not in ('', 'any', 'all', 'any district'):
+        dist_lower = str(district).strip().lower()
+        filtered = filtered[filtered['district'].str.lower() == dist_lower]
+        if filtered.empty:
+            return {'colleges': [], 'total': 0, 'page': 1, 'per_page': per_page, 'total_pages': 0}
+
+    # 2a. Optional search name filter (for filtering results)
+    if search_query and str(search_query).strip():
+        sq = str(search_query).strip().lower()
+        filtered = filtered[filtered['college_name'].str.lower().str.contains(sq, na=False)]
+        if filtered.empty:
+            return {'colleges': [], 'total': 0, 'page': 1, 'per_page': per_page, 'total_pages': 0}
+
+    # 2b. Optional budget filter — exclude colleges where ALL fees exceed budget
+    if max_fee and max_fee > 0 and 'college_fees' in filtered.columns:
+        # Keep rows where fee is within budget (or fee is unknown)
+        fee_mask = (filtered['college_fees'].isna()) | (filtered['college_fees'] <= max_fee)
+        budget_filtered = filtered[fee_mask]
+        # Only apply if at least some results survive
+        if not budget_filtered.empty:
+            filtered = budget_filtered
+    # 3. Group by college, then by branch — compute min/avg/max
+    grouped = filtered.groupby(['college_name', 'branch']).agg(
+        cut_min=('cut_off', 'min'),
+        cut_avg=('cut_off', 'mean'),
+        cut_max=('cut_off', 'max'),
+        fee_min=('college_fees', 'min'),
+        fee_max=('college_fees', 'max'),
+        district=('district', 'first'),
+    ).reset_index()
+
+    # 4. Compute per-branch chance
+    grouped['chance'] = grouped.apply(
+        lambda r: _compute_branch_chance(user_cutoff, r['cut_min'], r['cut_avg'], r['cut_max']),
+        axis=1
+    )
+    grouped['chance_level'] = grouped['chance'].apply(_chance_level)
+    grouped['cut_avg'] = grouped['cut_avg'].round(2)
+
+    # 5. Build college-level aggregation
+    college_agg = grouped.groupby('college_name').agg(
+        best_chance=('chance', 'max'),
+        avg_chance=('chance', 'mean'),
+        avg_cutoff=('cut_avg', 'mean'),
+        fee_min=('fee_min', 'min'),
+        fee_max=('fee_max', 'max'),
+        district=('district', 'first'),
+        branch_count=('branch', 'count'),
+    ).reset_index()
+
+    # Determine overall chance level for each college (from best branch)
+    college_agg['chance_level'] = college_agg['best_chance'].apply(_chance_level)
+
+    # 6. Sorting
+    if sort_by == 'cutoff_high':
+        college_agg = college_agg.sort_values('avg_cutoff', ascending=False)
+    elif sort_by == 'cutoff_low':
+        college_agg = college_agg.sort_values('avg_cutoff', ascending=True)
+    elif sort_by == 'fees_low':
+        college_agg = college_agg.sort_values('fee_min', ascending=True)
+    elif sort_by == 'fees_high':
+        college_agg = college_agg.sort_values('fee_max', ascending=False)
+    else:  # best_match
+        college_agg = college_agg.sort_values('best_chance', ascending=False)
+
+    total = len(college_agg)
+    total_pages = max(1, (total + per_page - 1) // per_page)
+    page = max(1, min(page, total_pages))
+    start = (page - 1) * per_page
+    end = start + per_page
+    page_colleges = college_agg.iloc[start:end]
+
+    # 7. Build response
+    results = []
+    for rank_idx, (_, col_row) in enumerate(page_colleges.iterrows(), start=start + 1):
+        cname = col_row['college_name']
+        # Get branches for this college
+        branch_rows = grouped[grouped['college_name'] == cname].sort_values('chance', ascending=False)
+        branches = []
+        for _, br in branch_rows.iterrows():
+            branches.append({
+                'name': br['branch'],
+                'min': float(br['cut_min']),
+                'avg': float(br['cut_avg']),
+                'max': float(br['cut_max']),
+                'chance': int(br['chance']),
+                'level': br['chance_level'],
+            })
+
+        # Try to get college type from generated_details
+        college_type = 'Engineering College'
+        gen = _get_best_generated_match(cname)
+        if gen is not None:
+            ct = gen.get('college_type')
+            if ct and str(ct).strip() and str(ct).strip().lower() != 'nan':
+                college_type = str(ct).strip()
+
+        results.append({
+            'rank': rank_idx,
+            'name': cname,
+            'district': str(col_row['district']),
+            'college_type': college_type,
+            'best_chance': int(col_row['best_chance']),
+            'chance_level': col_row['chance_level'],
+            'fee_min': float(col_row['fee_min']) if not pd.isna(col_row['fee_min']) else None,
+            'fee_max': float(col_row['fee_max']) if not pd.isna(col_row['fee_max']) else None,
+            'branches': branches,
+        })
+
+    return {
+        'colleges': results,
+        'total': total,
+        'page': page,
+        'per_page': per_page,
+        'total_pages': total_pages,
+    }
+
+
+ALL_DISTRICTS = sorted(colleges_df['district'].dropna().unique().tolist()) if not colleges_df.empty else []
+ALL_CATEGORIES = sorted(colleges_df['category'].dropna().unique().tolist()) if not colleges_df.empty else ['OC', 'BC', 'MBC', 'SC', 'ST']
+ALL_BRANCHES = sorted(colleges_df['branch'].dropna().unique().tolist()) if not colleges_df.empty else []
+ALL_COLLEGE_NAMES = sorted(colleges_df['college_name'].dropna().unique().tolist()) if not colleges_df.empty else []
+
+
+@app.route('/predict', methods=['GET'], endpoint='predict')
+def predict_page():
     user_id = session.get('user_id')
     if not user_id:
         flash('Please log in to access prediction.', 'warning')
         return redirect(url_for('login'))
 
-    error = None
-    prediction = None
-    top_predictions = None
-    top_predictions_detailed = None
-    input_data = None
+    return render_template('index.html',
+                           all_districts=ALL_DISTRICTS,
+                           all_categories=ALL_CATEGORIES,
+                           all_colleges=ALL_COLLEGE_NAMES,
+                           gemini_available=GEMINI_AVAILABLE)
 
-    if request.method == 'POST':
-        try:
-            input_data = {
-                'cut_off':              float(request.form['cut_off']),
-                'previous_year_cutoff': float(request.form['previous_year_cutoff']),
-                'rank':                 int(request.form['rank']),
-                'college_fees':         float(request.form['college_fees']),
-                'category':             request.form['category'],
-                'district':             request.form['district'],
-                'branch':               request.form['branch'],
-                'sports_quota':         request.form['sports_quota']
+
+@app.route('/compare', methods=['GET'])
+def compare_page():
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to access comparison.', 'warning')
+        return redirect(url_for('login'))
+    return render_template('compare.html',
+                           all_colleges=ALL_COLLEGE_NAMES)
+
+
+@app.route('/api/compare', methods=['POST'])
+def api_compare():
+    """JSON API for comparing up to 4 colleges side-by-side."""
+    try:
+        payload = request.get_json(silent=True) or {}
+        college_names = payload.get('colleges', [])
+        if not college_names or len(college_names) < 2:
+            return jsonify({'ok': False, 'error': 'Select at least 2 colleges'}), 400
+        if len(college_names) > 4:
+            college_names = college_names[:4]
+
+        results = []
+        for cname in college_names:
+            cname = str(cname).strip()
+            if not cname:
+                continue
+
+            entry = {
+                'name': cname,
+                'location': None,
+                'college_type': None,
+                'affiliation': None,
+                'placement_rate': None,
+                'avg_package': None,
+                'highest_package': None,
+                'fee_avg': None,
+                'fee_min': None,
+                'fee_max': None,
+                'hostel_fee': None,
+                'overall_fee': None,
+                'branches': [],
+                'categories': [],
             }
-            top_n = int(request.form.get('top_n', 3))
 
-            best_college, top_preds = predict_single_student(input_data, top_n)
+            # 1. From generated_details_df
+            gen = _get_best_generated_match(cname)
+            if gen is not None:
+                entry['location'] = normalize_spaces(gen.get('location')) or None
+                entry['college_type'] = normalize_spaces(gen.get('college_type')) or None
+                entry['affiliation'] = normalize_spaces(gen.get('affiliation')) or None
+                entry['placement_rate'] = _num_or_none(gen.get('placement_rate_percent'))
+                entry['avg_package'] = _num_or_none(gen.get('average_package_lpa'))
+                entry['highest_package'] = _num_or_none(gen.get('highest_package_lpa'))
+                entry['overall_fee'] = _num_or_none(gen.get('overall_fees'))
+                entry['hostel_fee'] = _num_or_none(gen.get('hostel_fees'))
 
-            prediction = best_college
-            top_predictions = top_preds
-
-            # Lookup details for the predicted college
-            fees_info = None
-            placements_info = None
-            college_details = None
-            placement_details = None
-            fees_details = None
-            detail_sources = []
-            details_source_label = None
-            details_fetched_at = None
-
-            # Primary source: generated details dataset; enrichment source: Gemini web extraction
-            generated_details = get_college_details_from_generated_dataset(best_college)
-            web_details = fetch_college_details_from_web(best_college)
-            merged_details = merge_detail_payloads(generated_details, web_details)
-
-            if merged_details:
-                college_details = merged_details.get('college_details') or None
-                placement_details = merged_details.get('placement_details') or None
-                fees_details = merged_details.get('fees_details') or None
-                detail_sources = merged_details.get('sources') or []
-                details_source_label = merged_details.get('source_label')
-                details_fetched_at = merged_details.get('fetched_at')
-
-                if placement_details:
-                    placements_info = placement_details.get('summary')
-                if fees_details:
-                    fees_info = {
-                        'mean': fees_details.get('tuition_fee_annual_inr'),
-                        'min': None,
-                        'max': fees_details.get('overall_program_fee_inr'),
-                        'currency': 'INR'
-                    }
-
-            # Secondary source: dataset fallback for fees/placements when web extraction misses
+            # 2. From main colleges_df (cutoff dataset)
             if not colleges_df.empty:
-                # try exact match first, then substring match
-                mask_exact = colleges_df['college_name'].str.lower() == str(best_college).lower()
-                mask_contains = colleges_df['college_name'].str.lower().str.contains(str(best_college).lower(), na=False)
-
+                mask_exact = colleges_df['college_name'].str.lower() == cname.lower()
                 matched = colleges_df[mask_exact]
                 if matched.empty:
+                    mask_contains = colleges_df['college_name'].str.lower().str.contains(
+                        cname.lower().split(' - ')[0], na=False, regex=False
+                    )
                     matched = colleges_df[mask_contains]
 
                 if not matched.empty:
-                    fees_mean = matched['college_fees'].dropna().mean()
-                    fees_min = matched['college_fees'].dropna().min()
-                    fees_max = matched['college_fees'].dropna().max()
-                    if fees_info is None:
-                        fees_info = {
-                            'mean': float(fees_mean) if not np.isnan(fees_mean) else None,
-                            'min': float(fees_min) if not np.isnan(fees_min) else None,
-                            'max': float(fees_max) if not np.isnan(fees_max) else None,
-                            'currency': 'INR'
-                        }
+                    fees = matched['college_fees'].dropna()
+                    if not fees.empty:
+                        entry['fee_min'] = float(fees.min())
+                        entry['fee_max'] = float(fees.max())
+                        entry['fee_avg'] = round(float(fees.mean()))
 
-                    if fees_details is None:
-                        fees_details = {
-                            'tuition_fee_annual_inr': float(fees_mean) if not np.isnan(fees_mean) else None,
-                            'overall_program_fee_inr': None,
-                            'hostel_fee_annual_inr': None,
-                            'notes': 'Estimated from historical dataset entries for this college.'
-                        }
+                    if entry['location'] is None:
+                        entry['location'] = str(matched['district'].iloc[0])
 
-                    # If dataset contains placements column, use it
-                    if 'placements' in matched.columns:
-                        # try to provide a summarized placement info if available
-                        placements_vals = matched['placements'].dropna()
-                        if not placements_vals.empty:
-                            # if placements stored as numeric percent, show avg
-                            try:
-                                placements_mean = float(placements_vals.astype(float).mean())
-                                if placements_info is None:
-                                    placements_info = f"Average placement rate: {placements_mean:.1f}%"
-                                if placement_details is None:
-                                    placement_details = {
-                                        'summary': placements_info,
-                                        'placement_rate_percent': placements_mean,
-                                        'average_package_lpa': None,
-                                        'highest_package_lpa': None,
-                                        'top_recruiters': []
-                                    }
-                            except Exception:
-                                # otherwise show first non-null value
-                                if placements_info is None:
-                                    placements_info = str(placements_vals.iloc[0])
-                                if placement_details is None:
-                                    placement_details = {
-                                        'summary': placements_info,
-                                        'placement_rate_percent': None,
-                                        'average_package_lpa': None,
-                                        'highest_package_lpa': None,
-                                        'top_recruiters': []
-                                    }
-                    else:
-                        placements_info = placements_info
+                    entry['branches'] = sorted(matched['branch'].dropna().unique().tolist())
+                    entry['categories'] = sorted(matched['category'].dropna().unique().tolist())
 
-            # Last fallback for placements: generic Gemini lookup
-            placements_source = None
-            if placements_info is None:
-                try:
-                    gemini_summary = fetch_placements_with_gemini(best_college)
-                    if gemini_summary:
-                        placements_info = gemini_summary
-                        placements_source = 'Gemini (approx)'
-                        if placement_details is None:
-                            placement_details = {
-                                'summary': gemini_summary,
-                                'placement_rate_percent': None,
-                                'average_package_lpa': None,
-                                'highest_package_lpa': None,
-                                'top_recruiters': []
-                            }
-                except Exception:
-                    placements_source = None
+            results.append(entry)
 
-            if not placements_source and details_source_label:
-                placements_source = details_source_label
+        return jsonify({'ok': True, 'colleges': results})
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({'ok': False, 'error': str(e)}), 500
 
-            # attach these to template context
-            # make them available even if None so template can handle display
-            request.fees_info = fees_info
-            request.placements_info = placements_info
-            request.placements_source = placements_source
-            request.college_details = college_details
-            request.placement_details = placement_details
-            request.fees_details = fees_details
-            request.detail_sources = detail_sources
-            request.details_source_label = details_source_label
-            request.details_fetched_at = details_fetched_at
 
-            # Build detailed info for each top prediction (placements per college)
-            top_predictions_detailed = None
-            if top_predictions:
-                top_predictions_detailed = []
-                for college_name, prob in top_predictions:
-                    col_placements = None
-                    col_source = None
-                    try:
-                        generated_alt = get_college_details_from_generated_dataset(college_name)
-                        if generated_alt:
-                            p = generated_alt.get('placement_details') or {}
-                            if p.get('summary'):
-                                col_placements = p.get('summary')
-                                col_source = 'Generated dataset'
+@app.route('/api/predict', methods=['POST'])
+def api_predict():
+    """JSON API for CollegeDP-style college prediction."""
+    try:
+        payload = request.get_json(silent=True) or {}
+        maths = float(payload.get('maths', 0))
+        physics = float(payload.get('physics', 0))
+        chemistry = float(payload.get('chemistry', 0))
+        category = str(payload.get('category', 'OC')).strip()
+        district = str(payload.get('district', '')).strip()
+        sort_by = str(payload.get('sort_by', 'best_match')).strip()
+        page = int(payload.get('page', 1))
+        search_query = str(payload.get('search_query', '')).strip()
 
-                        if not colleges_df.empty:
-                            mask_exact = colleges_df['college_name'].str.lower() == str(college_name).lower()
-                            mask_contains = colleges_df['college_name'].str.lower().str.contains(str(college_name).lower(), na=False)
-                            matched = colleges_df[mask_exact]
-                            if matched.empty:
-                                matched = colleges_df[mask_contains]
+        # Validate marks
+        for mark, name in [(maths, 'Maths'), (physics, 'Physics'), (chemistry, 'Chemistry')]:
+            if mark < 0 or mark > 100:
+                return jsonify({'ok': False, 'error': f'{name} marks must be between 0 and 100'}), 400
 
-                            if col_placements is None and not matched.empty and 'placements' in matched.columns:
-                                placements_vals = matched['placements'].dropna()
-                                if not placements_vals.empty:
-                                    try:
-                                        placements_mean = float(placements_vals.astype(float).mean())
-                                        col_placements = f"Average placement rate: {placements_mean:.1f}%"
-                                        col_source = 'Dataset'
-                                    except Exception:
-                                        col_placements = str(placements_vals.iloc[0])
-                                        col_source = 'Dataset'
+        # TNEA cutoff formula
+        cutoff = maths + (physics / 2) + (chemistry / 2)
 
-                        # fallback to Gemini if not found in dataset
-                        if col_placements is None:
-                            gem_summary = fetch_placements_with_gemini(college_name)
-                            if gem_summary:
-                                col_placements = gem_summary
-                                col_source = 'Gemini (approx)'
-                    except Exception:
-                        col_placements = None
-                        col_source = None
+        result = predict_colleges(
+            user_cutoff=cutoff,
+            category=category,
+            district=district if district and district.lower() not in ('any district', 'any', '') else None,
+            sort_by=sort_by,
+            page=page,
+            per_page=25,
+            max_fee=float(payload.get('max_fee', 0)) if payload.get('max_fee') else None,
+            search_query=search_query
+        )
 
-                    top_predictions_detailed.append({
-                        'college': college_name,
-                        'prob': prob,
-                        'placements': col_placements,
-                        'placements_source': col_source
-                    })
-            else:
-                top_predictions_detailed = None
+        result['ok'] = True
+        result['cutoff'] = round(cutoff, 2)
+        result['category'] = category
 
-            # Save prediction to DB if user is logged in
-            try:
-                user_id = session.get('user_id')
-                if user_id:
-                    db = get_db()
-                    db.execute(
-                        "INSERT INTO predictions (user_id, input_json, prediction, top_predictions_json, fees_info_json, placements_info_json, created_at) VALUES (?,?,?,?,?,?,?)",
-                        (
-                            int(user_id),
-                            json.dumps(input_data, ensure_ascii=False),
-                            str(prediction),
-                            json.dumps(top_predictions, ensure_ascii=False),
-                            json.dumps(fees_info, ensure_ascii=False),
-                            json.dumps(placements_info, ensure_ascii=False),
-                            utc_now_iso()
-                        )
-                    )
-                    db.commit()
-            except Exception:
-                # do not fail request if DB write fails
-                traceback.print_exc()
-
-            # render results on separate page
-            return render_template('result.html',
-                                   error=None,
-                                   prediction=prediction,
-                                   best_college=prediction,
-                                   top_predictions=top_predictions,
-                                   top_predictions_detailed=top_predictions_detailed,
-                                   input_data=input_data,
-                                   fees_info=getattr(request, 'fees_info', None),
-                                   placements_info=getattr(request, 'placements_info', None),
-                                   placements_source=getattr(request, 'placements_source', None),
-                                   college_details=getattr(request, 'college_details', None),
-                                   placement_details=getattr(request, 'placement_details', None),
-                                   fees_details=getattr(request, 'fees_details', None),
-                                   detail_sources=getattr(request, 'detail_sources', None),
-                                   details_source_label=getattr(request, 'details_source_label', None),
-                                   details_fetched_at=getattr(request, 'details_fetched_at', None),
-                                   gemini_available=GEMINI_AVAILABLE)
-
-        except Exception as e:
-            error = str(e)
+        # Save prediction to DB
+        try:
+            user_id = session.get('user_id')
+            if user_id:
+                db = get_db()
+                input_data = {'maths': maths, 'physics': physics, 'chemistry': chemistry,
+                              'cutoff': round(cutoff, 2), 'category': category, 'district': district or 'Any'}
+                top_colleges = result['colleges'][:5]
+                top_names = [c['name'] for c in top_colleges]
+                # Save top colleges with their fee and chance info
+                top_json = json.dumps([{
+                    'name': c['name'],
+                    'district': c.get('district', ''),
+                    'chance_level': c.get('chance_level', ''),
+                    'fee_min': c.get('fee_min'),
+                    'fee_max': c.get('fee_max'),
+                } for c in top_colleges])
+                db.execute(
+                    "INSERT INTO predictions (user_id, input_json, prediction, top_predictions_json, fees_info_json, placements_info_json, created_at) VALUES (?,?,?,?,?,?,?)",
+                    (int(user_id), json.dumps(input_data),
+                     top_names[0] if top_names else 'No colleges found',
+                     top_json, None, None, utc_now_iso())
+                )
+                db.commit()
+        except Exception:
             traceback.print_exc()
 
-    return render_template('index.html',
-                         error=error,
-                         prediction=prediction,
-                         top_predictions=top_predictions,
-                         top_predictions_detailed=top_predictions_detailed,
-                         input_data=input_data,
-                         fees_info=getattr(request, 'fees_info', None),
-                         placements_info=getattr(request, 'placements_info', None),
-                         placements_source=getattr(request, 'placements_source', None),
-                         college_details=getattr(request, 'college_details', None),
-                         placement_details=getattr(request, 'placement_details', None),
-                         fees_details=getattr(request, 'fees_details', None),
-                         detail_sources=getattr(request, 'detail_sources', None),
-                         details_source_label=getattr(request, 'details_source_label', None),
-                         details_fetched_at=getattr(request, 'details_fetched_at', None),
-                         gemini_available=GEMINI_AVAILABLE)
+        return jsonify(result)
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+
+@app.route('/api/college-details', methods=['POST'])
+def api_college_details():
+    """Fetch detailed info for a specific college."""
+    try:
+        payload = request.get_json(silent=True) or {}
+        college_name = str(payload.get('name', '')).strip()
+        if not college_name:
+            return jsonify({'ok': False, 'error': 'College name required'}), 400
+
+        details = {}
+
+        # 1. Generated dataset details (placements, college type, etc.)
+        gen = get_college_details_from_generated_dataset(college_name)
+        if gen:
+            details['college_info'] = gen.get('college_details') or {}
+            details['placements'] = gen.get('placement_details') or {}
+            details['fees_details'] = gen.get('fees_details') or {}
+        else:
+            details['college_info'] = {}
+            details['placements'] = {}
+            details['fees_details'] = {}
+
+        # 2. Dataset stats (aggregated from CSV)
+        if not colleges_df.empty:
+            mask_exact = colleges_df['college_name'].str.lower() == college_name.lower()
+            matched = colleges_df[mask_exact]
+            if matched.empty:
+                # try fuzzy contains
+                mask_contains = colleges_df['college_name'].str.lower().str.contains(
+                    college_name.lower().split(' - ')[0], na=False, regex=False
+                )
+                matched = colleges_df[mask_contains]
+
+            if not matched.empty:
+                details['district'] = str(matched['district'].iloc[0])
+                fees = matched['college_fees'].dropna()
+                if not fees.empty:
+                    details['fee_min'] = float(fees.min())
+                    details['fee_max'] = float(fees.max())
+                    details['fee_avg'] = round(float(fees.mean()))
+                    if not details['fees_details'].get('tuition_fee_annual_inr'):
+                        details['fees_details']['tuition_fee_annual_inr'] = details['fee_avg']
+
+                # Branches available
+                branches = sorted(matched['branch'].unique().tolist())
+                details['branches_available'] = branches
+
+                # Categories available
+                cats = sorted(matched['category'].unique().tolist())
+                details['categories_available'] = cats
+
+        # 3. Web-enriched details (Gemini)
+        try:
+            web = fetch_college_details_from_web(college_name)
+            if web:
+                merged = merge_detail_payloads(gen, web)
+                if merged:
+                    if merged.get('college_details'):
+                        details['college_info'] = {**details.get('college_info', {}), **{k: v for k, v in merged['college_details'].items() if v}}
+                    if merged.get('placement_details'):
+                        details['placements'] = {**details.get('placements', {}), **{k: v for k, v in merged['placement_details'].items() if v}}
+                    if merged.get('fees_details'):
+                        details['fees_details'] = {**details.get('fees_details', {}), **{k: v for k, v in merged['fees_details'].items() if v}}
+        except Exception:
+            traceback.print_exc()
+
+        details['ok'] = True
+        details['name'] = college_name
+        return jsonify(details)
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({'ok': False, 'error': str(e)}), 500
 
 
 def get_chat_owner_key():
@@ -1588,23 +1711,6 @@ def chatbot_ask():
         return jsonify({'ok': False, 'error': 'Unable to process request right now.'}), 500
 
 
-@app.route('/api/college-details', methods=['POST'])
-def api_college_details():
-    if not session.get('user_id'):
-        return jsonify({'ok': False, 'error': 'Authentication required.'}), 401
-
-    try:
-        payload = request.get_json(silent=True) or {}
-        college_name = normalize_spaces(payload.get('college_name', ''))
-        if not college_name:
-            return jsonify({'ok': False, 'error': 'college_name is required.'}), 400
-
-        details = build_college_full_details(college_name)
-        return jsonify({'ok': True, 'details': details})
-    except Exception:
-        traceback.print_exc()
-        return jsonify({'ok': False, 'error': 'Unable to load college details.'}), 500
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -1659,8 +1765,13 @@ def dashboard():
     rows = db.execute('SELECT * FROM predictions WHERE user_id = ? ORDER BY created_at DESC LIMIT 5', (int(user_id),)).fetchall()
     recent = []
     for r in rows:
+        try:
+            input_data = json.loads(r['input_json']) if r['input_json'] else {}
+        except Exception:
+            input_data = {}
         recent.append({
             'id': r['id'],
+            'input': input_data,
             'prediction': r['prediction'],
             'created_at': r['created_at']
         })
@@ -1684,13 +1795,21 @@ def history():
     rows = db.execute('SELECT * FROM predictions WHERE user_id = ? ORDER BY created_at DESC', (int(user_id),)).fetchall()
     history = []
     for r in rows:
+        try:
+            input_data = json.loads(r['input_json']) if r['input_json'] else {}
+        except Exception:
+            input_data = {}
+        try:
+            top_raw = r['top_predictions_json']
+            top = json.loads(top_raw) if top_raw else []
+        except Exception:
+            top = []
         history.append({
             'id': r['id'],
-            'input': json.loads(r['input_json']) if r['input_json'] else None,
-            'prediction': r['prediction'],
-            'top_predictions': json.loads(r['top_predictions_json']) if r['top_predictions_json'] else None,
-            'fees_info': json.loads(r['fees_info_json']) if r['fees_info_json'] else None,
-            'placements_info': json.loads(r['placements_info_json']) if r['placements_info_json'] else None,
+            'input': input_data,
+            'prediction': r['prediction'] or '',
+            'top_colleges': top if isinstance(top, list) and top and isinstance(top[0], dict) else [],
+            'top_names': top if isinstance(top, list) and top and isinstance(top[0], str) else [],
             'created_at': r['created_at']
         })
     return render_template('history.html', history=history)
